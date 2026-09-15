@@ -398,7 +398,7 @@
   }
   .items-listbox .items-head{
     display:grid;
-    grid-template-columns:34px 1fr 90px 100px 96px;
+    grid-template-columns:34px 1fr 90px 96px;
     gap:6px;
     padding:9px 12px;
     font-size:11px;
@@ -423,7 +423,7 @@
   }
   .item-row{
     display:grid;
-    grid-template-columns:34px 1fr 90px 100px 96px;
+    grid-template-columns:34px 1fr 90px 96px;
     gap:6px;
     align-items:center;
     padding:8px 12px 5px;
@@ -477,12 +477,47 @@
   }
   @media (max-width:420px){
     .items-listbox .items-head, .item-row{
-      grid-template-columns:28px 1fr 60px 70px 80px;
+      grid-template-columns:28px 1fr 70px 80px;
       gap:4px;
       padding-left:8px;
       padding-right:8px;
     }
     .item-row .iunit{font-size:11.5px;}
+  }
+
+  .order-items-list{
+    border:1px solid var(--line);
+    border-radius:var(--radius-md);
+    box-shadow:var(--shadow-sm);
+    background:var(--panel);
+    max-height:280px;
+    overflow-y:auto;
+    margin-bottom:14px;
+  }
+  .order-item-row{
+    display:grid;
+    grid-template-columns:1fr 90px 70px 34px;
+    gap:8px;
+    align-items:center;
+    padding:9px 12px;
+    border-bottom:1px solid var(--line-soft);
+  }
+  .order-item-row:last-child{border-bottom:none;}
+  .order-item-row .oi-name{font-size:14px;}
+  .order-item-row .oi-unit{font-size:13px; color:var(--ink-soft);}
+  .order-item-row input[type="number"]{
+    width:100%;
+    font-family:inherit;
+    font-size:14px;
+    padding:6px 7px;
+    border:1px solid var(--line);
+    border-radius:6px;
+    background:var(--panel);
+    color:var(--ink);
+    transition:border-color var(--ease);
+  }
+  @media (max-width:420px){
+    .order-item-row{grid-template-columns:1fr 70px 55px 30px; gap:5px; padding-left:8px; padding-right:8px;}
   }
 
   .item-edit-row{
@@ -1568,7 +1603,7 @@
           mainHtml += `<div class="no-items">${searchNorm ? 'Κανένα είδος ταιριάζει στην αναζήτηση.' : 'Κανένα είδος σε αυτή την κατηγορία.'}</div>`;
         } else {
           mainHtml += `<div class="items-listbox">
-            <div class="items-head"><span></span><span>Είδος</span><span>Μονάδα</span><span>Ποσότητα</span><span></span></div>`;
+            <div class="items-head"><span></span><span>Είδος</span><span>Μονάδα</span><span></span></div>`;
           groups.forEach(group => {
             mainHtml += `<div class="category-header">${esc(group.cat)}</div>`;
             group.items.forEach((it, idxInGroup) => {
@@ -1601,7 +1636,6 @@
                     <input type="checkbox" data-check="${it.id}" ${s.checked ? 'checked' : ''}>
                     <span class="iname">${esc(it.name)}</span>
                     <span class="iunit">${esc(it.unit || '—')}</span>
-                    <input type="number" min="0" step="0.5" data-qty="${it.id}" value="${s.qty}">
                     <span class="row-actions">
                       <button class="move-btn" data-move-up="${it.id}" title="Μετακίνηση πάνω" ${idxInGroup === 0 ? 'disabled' : ''}>▲</button>
                       <button class="move-btn" data-move-down="${it.id}" title="Μετακίνηση κάτω" ${idxInGroup === group.items.length - 1 ? 'disabled' : ''}>▼</button>
@@ -1609,7 +1643,7 @@
                       <button class="item-del" data-del-item="${it.id}" title="Διαγραφή είδους">✕</button>
                     </span>
                   </div>
-                  ${price > 0 ? `<div class="item-price-line ${s.checked ? 'checked' : 'excluded'}">${fmtMoney(price)}/${esc(it.unit || 'τεμ.')} · ΦΠΑ ${Number(it.vat)||0}% · τελική τιμή: ${fmtMoney(Number(s.qty) * price * (1 + (Number(it.vat)||0)/100))}</div>` : ''}`;
+                  ${price > 0 ? `<div class="item-price-line ${s.checked ? 'checked' : 'excluded'}" id="priceline-${it.id}">${fmtMoney(price)}/${esc(it.unit || 'τεμ.')} · ΦΠΑ ${Number(it.vat)||0}% · τελική τιμή: ${fmtMoney(Number(s.qty) * price * (1 + (Number(it.vat)||0)/100))}</div>` : ''}`;
               }
             });
           });
@@ -1642,6 +1676,24 @@
             </div>`;
       }
       mainHtml += `
+          </div>`;
+
+      const orderedItems = selectedSupplier.items.filter(it => sel[it.id] && sel[it.id].checked);
+      mainHtml += `
+          <div class="items-section">
+            <h3>Είδη παραγγελίας</h3>
+            ${orderedItems.length === 0
+              ? `<div class="no-items">Δεν έχεις επιλέξει ακόμα είδη. Άνοιξε τα "Είδη" παραπάνω για να προσθέσεις.</div>`
+              : `<div class="order-items-list">
+                  ${orderedItems.map(it => `
+                    <div class="order-item-row">
+                      <span class="oi-name">${esc(it.name)}</span>
+                      <input type="number" min="0" step="0.5" data-order-qty="${it.id}" value="${sel[it.id].qty}">
+                      <span class="oi-unit">${esc(it.unit || '')}</span>
+                      <button class="item-del" data-order-remove="${it.id}" title="Αφαίρεση από την παραγγελία">✕</button>
+                    </div>`).join('')}
+                </div>`
+            }
           </div>`;
 
       const orderText = buildOrderText(selectedSupplier);
@@ -1923,23 +1975,30 @@
         render();
       });
     });
-    document.querySelectorAll('[data-qty]').forEach(inp => {
+    document.querySelectorAll('[data-order-qty]').forEach(inp => {
       inp.addEventListener('input', () => {
         const sel = ensureSelections(selectedSupplier);
-        sel[inp.dataset.qty].qty = inp.value;
+        sel[inp.dataset.orderQty].qty = inp.value;
         copiedMsg = '';
-        const it = selectedSupplier.items.find(x => x.id === inp.dataset.qty);
+        const it = selectedSupplier.items.find(x => x.id === inp.dataset.orderQty);
         const price = it ? Number(it.price) || 0 : 0;
         if(it && price > 0){
-          const row = inp.closest('.item-row');
-          const priceLine = row ? row.nextElementSibling : null;
-          if(priceLine && priceLine.classList.contains('item-price-line')){
+          const priceLine = document.getElementById(`priceline-${it.id}`);
+          if(priceLine){
             const vat = Number(it.vat) || 0;
             const total = Number(inp.value || 0) * price * (1 + vat/100);
             priceLine.textContent = `${fmtMoney(price)}/${it.unit || 'τεμ.'} · ΦΠΑ ${vat}% · τελική τιμή: ${fmtMoney(total)}`;
           }
         }
         renderReceiptOnly(selectedSupplier);
+      });
+    });
+    document.querySelectorAll('[data-order-remove]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const sel = ensureSelections(selectedSupplier);
+        sel[btn.dataset.orderRemove].checked = false;
+        copiedMsg = '';
+        render();
       });
     });
     document.querySelectorAll('[data-del-item]').forEach(btn => {
