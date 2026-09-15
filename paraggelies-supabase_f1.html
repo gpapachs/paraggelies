@@ -1050,6 +1050,7 @@
   let supplierSearchQuery = '';
   let itemSearchQuery = '';
   let itemsPanelOpen = false;
+  let orderItemsPanelOpen = false;
 
   const layout = document.getElementById('layout');
   document.getElementById('todayLabel').textContent = new Date().toLocaleDateString('el-GR', {day:'numeric', month:'long', year:'numeric'});
@@ -1681,7 +1682,13 @@
       const orderedItems = selectedSupplier.items.filter(it => sel[it.id] && sel[it.id].checked);
       mainHtml += `
           <div class="items-section">
-            <h3>Είδη παραγγελίας</h3>
+            <button class="picker-toggle" id="orderItemsPickerToggle">
+              <span>${orderedItems.length} είδη στην παραγγελία</span>
+              <span class="chevron">${orderItemsPanelOpen ? '▴' : '▾'}</span>
+            </button>`;
+      if(orderItemsPanelOpen){
+        mainHtml += `
+            <div class="picker-panel">
             ${orderedItems.length === 0
               ? `<div class="no-items">Δεν έχεις επιλέξει ακόμα είδη. Άνοιξε τα "Είδη" παραπάνω για να προσθέσεις.</div>`
               : `<div class="order-items-list">
@@ -1694,6 +1701,9 @@
                     </div>`).join('')}
                 </div>`
             }
+            </div>`;
+      }
+      mainHtml += `
           </div>`;
 
       const orderText = buildOrderText(selectedSupplier);
@@ -1798,6 +1808,13 @@
         }
       });
     }
+    const orderItemsPickerToggle = document.getElementById('orderItemsPickerToggle');
+    if(orderItemsPickerToggle){
+      orderItemsPickerToggle.addEventListener('click', () => {
+        orderItemsPanelOpen = !orderItemsPanelOpen;
+        render();
+      });
+    }
     const supplierSearchInputEl = document.getElementById('supplierSearchInput');
     if(supplierSearchInputEl){
       supplierSearchInputEl.addEventListener('input', () => {
@@ -1824,6 +1841,7 @@
         editingItemId = null;
         supplierPickerOpen = false;
         itemsPanelOpen = false;
+        orderItemsPanelOpen = false;
         render();
       });
     });
