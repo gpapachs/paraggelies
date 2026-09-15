@@ -106,6 +106,52 @@
     margin:0 0 10px;
     color:var(--ink-soft);
   }
+  .picker-toggle{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    width:100%;
+    gap:8px;
+    font-family:inherit;
+    font-size:14.5px;
+    font-weight:500;
+    padding:11px 14px;
+    border:1px solid var(--line);
+    border-radius:var(--radius-md);
+    background:var(--panel);
+    box-shadow:var(--shadow-sm);
+    color:var(--ink);
+    cursor:pointer;
+    margin-bottom:6px;
+    transition:border-color var(--ease);
+  }
+  .picker-toggle:hover{border-color:var(--pine);}
+  .picker-toggle .chevron{color:var(--ink-soft); font-size:12px;}
+  .picker-toggle .placeholder{color:var(--ink-soft); font-weight:400;}
+  .picker-panel{
+    margin-top:6px;
+  }
+  .picker-search{
+    width:100%;
+    font-family:inherit;
+    font-size:14px;
+    padding:9px 11px;
+    margin-bottom:6px;
+    border:1px solid var(--line);
+    border-radius:var(--radius-sm);
+    background:var(--panel);
+    color:var(--ink);
+    transition:border-color var(--ease), box-shadow var(--ease);
+  }
+  .picker-search:focus{outline:none; border-color:var(--pine); box-shadow:0 0 0 3px rgba(22,163,74,0.15);}
+  .no-match-row{
+    padding:11px 14px;
+    font-size:13.5px;
+    color:var(--ink-soft);
+    border:1px solid var(--line);
+    border-radius:var(--radius-md);
+    background:var(--panel);
+  }
   .supplier-list{
     list-style:none;
     margin:0 0 14px;
@@ -965,6 +1011,10 @@
   let pendingDeleteHistoryTimeout = null;
   let categoryFilter = 'all';
   let editingItemId = null;
+  let supplierPickerOpen = false;
+  let supplierSearchQuery = '';
+  let itemSearchQuery = '';
+  let itemsPanelOpen = false;
 
   const layout = document.getElementById('layout');
   document.getElementById('todayLabel').textContent = new Date().toLocaleDateString('el-GR', {day:'numeric', month:'long', year:'numeric'});
@@ -1393,19 +1443,33 @@
     }
 
     const selectedSupplier = suppliers.find(s => s.id === selectedId);
+    const filteredSuppliers = suppliers.filter(s => s.name.toLowerCase().includes(supplierSearchQuery.trim().toLowerCase()));
 
     let sidebarHtml = `<div class="suppliers">
       <h2>Προμηθευτές</h2>
-      <ul class="supplier-list">`;
-    suppliers.forEach(s => {
-      const confirming = pendingDeleteId === s.id;
+      <button class="picker-toggle" id="supplierPickerToggle">
+        <span class="${selectedSupplier ? '' : 'placeholder'}">${selectedSupplier ? esc(selectedSupplier.name) : 'Επίλεξε προμηθευτή'}</span>
+        <span class="chevron">${supplierPickerOpen ? '▴' : '▾'}</span>
+      </button>`;
+
+    if(supplierPickerOpen){
       sidebarHtml += `
+      <div class="picker-panel">
+        <input type="text" id="supplierSearchInput" class="picker-search" placeholder="Αναζήτηση προμηθευτή…" value="${esc(supplierSearchQuery)}">
+        ${filteredSuppliers.length === 0 ? `<div class="no-match-row">Καμία αντιστοιχία.</div>` : `
+        <ul class="supplier-list">`}
+        `;
+      filteredSuppliers.forEach(s => {
+        const confirming = pendingDeleteId === s.id;
+        sidebarHtml += `
         <li class="supplier-row ${s.id === selectedId ? 'active' : ''}" data-id="${s.id}">
           <span class="name">${esc(s.name)}</span>
           <button class="del ${confirming ? 'confirming' : ''}" data-del-supplier="${s.id}" title="${confirming ? 'Πάτα ξανά για επιβεβαίωση' : 'Διαγραφή προμηθευτή'}">${confirming ? 'Σίγουρα;' : '✕'}</button>
         </li>`;
-    });
-    sidebarHtml += `</ul>`;
+      });
+      if(filteredSuppliers.length > 0) sidebarHtml += `</ul>`;
+      sidebarHtml += `</div>`;
+    }
 
     if(showAddSupplier){
       sidebarHtml += `
@@ -1460,8 +1524,16 @@
           </div>`;
       }
 
+      const checkedCount = selectedSupplier.items.filter(it => sel[it.id] && sel[it.id].checked).length;
       mainHtml += `
           <div class="items-section">
+            <button class="picker-toggle" id="itemsPickerToggle">
+              <span>${checkedCount} από ${selectedSupplier.items.length} είδη επιλεγμένα</span>
+              <span class="chevron">${itemsPanelOpen ? '▴' : '▾'}</span>
+            </button>`;
+      if(itemsPanelOpen){
+      mainHtml += `
+            <div class="picker-panel">
             <div class="items-section-header">
               <h3>Είδη που παραγγέλνεις από εδώ</h3>
               <button class="link-btn" id="openBulkAdd">Προσθήκη από κατάλογο</button>`;
@@ -1476,17 +1548,24 @@
       }
       mainHtml += `
             </div>`;
+      if(selectedSupplier.items.length > 0){
+        mainHtml += `<input type="text" id="itemSearchInput" class="picker-search" placeholder="Αναζήτηση είδους…" value="${esc(itemSearchQuery)}">`;
+      }
 
       if(selectedSupplier.items.length === 0){
         mainHtml += `<div class="no-items">Δεν έχεις προσθέσει είδη ακόμα. Πρόσθεσε παρακάτω τα είδη που αγοράζεις καθημερινά από τον προμηθευτή.</div>`;
       } else {
+        const searchNorm = itemSearchQuery.trim().toLowerCase();
         const groups = groupItemsByCategory(selectedSupplier.items).filter(group => {
           if(categoryFilter === 'all') return true;
           if(categoryFilter === '__none__') return group.cat === 'Χωρίς κατηγορία';
           return group.cat === categoryFilter;
-        });
+        }).map(group => ({
+          cat: group.cat,
+          items: group.items.filter(it => it.name.toLowerCase().includes(searchNorm))
+        })).filter(group => group.items.length > 0);
         if(groups.length === 0){
-          mainHtml += `<div class="no-items">Κανένα είδος σε αυτή την κατηγορία.</div>`;
+          mainHtml += `<div class="no-items">${searchNorm ? 'Κανένα είδος ταιριάζει στην αναζήτηση.' : 'Κανένα είδος σε αυτή την κατηγορία.'}</div>`;
         } else {
           mainHtml += `<div class="items-listbox">
             <div class="items-head"><span></span><span>Είδος</span><span>Μονάδα</span><span>Ποσότητα</span><span></span></div>`;
@@ -1560,6 +1639,9 @@
               <input type="checkbox" id="newItemAddToCatalog" checked> Προσθήκη και στον κατάλογο προϊόντων (για γρήγορη αντιστοίχιση σε άλλους προμηθευτές)
             </label>
             <div class="form-error" id="newItemError"></div>
+            </div>`;
+      }
+      mainHtml += `
           </div>`;
 
       const orderText = buildOrderText(selectedSupplier);
@@ -1641,6 +1723,41 @@
   }
 
   function attachEvents(selectedSupplier){
+    const supplierPickerToggle = document.getElementById('supplierPickerToggle');
+    if(supplierPickerToggle){
+      supplierPickerToggle.addEventListener('click', () => {
+        supplierPickerOpen = !supplierPickerOpen;
+        if(supplierPickerOpen) supplierSearchQuery = '';
+        render();
+        if(supplierPickerOpen){
+          const el = document.getElementById('supplierSearchInput');
+          if(el) el.focus();
+        }
+      });
+    }
+    const itemsPickerToggle = document.getElementById('itemsPickerToggle');
+    if(itemsPickerToggle){
+      itemsPickerToggle.addEventListener('click', () => {
+        itemsPanelOpen = !itemsPanelOpen;
+        render();
+        if(itemsPanelOpen){
+          const el = document.getElementById('itemSearchInput');
+          if(el) el.focus();
+        }
+      });
+    }
+    const supplierSearchInputEl = document.getElementById('supplierSearchInput');
+    if(supplierSearchInputEl){
+      supplierSearchInputEl.addEventListener('input', () => {
+        supplierSearchQuery = supplierSearchInputEl.value;
+        render();
+        const el = document.getElementById('supplierSearchInput');
+        if(el){ el.focus(); const v = el.value; el.setSelectionRange(v.length, v.length); }
+      });
+      supplierSearchInputEl.addEventListener('keydown', (e) => {
+        if(e.key === 'Escape'){ supplierPickerOpen = false; render(); }
+      });
+    }
     document.querySelectorAll('.supplier-row').forEach(row => {
       row.addEventListener('click', (e) => {
         if(e.target.closest('[data-del-supplier]')) return;
@@ -1651,7 +1768,10 @@
         pendingDeleteHistoryId = null;
         clearTimeout(pendingDeleteHistoryTimeout);
         categoryFilter = 'all';
+        itemSearchQuery = '';
         editingItemId = null;
+        supplierPickerOpen = false;
+        itemsPanelOpen = false;
         render();
       });
     });
@@ -1723,6 +1843,16 @@
       categoryFilterEl.addEventListener('change', () => {
         categoryFilter = categoryFilterEl.value;
         render();
+      });
+    }
+
+    const itemSearchInputEl = document.getElementById('itemSearchInput');
+    if(itemSearchInputEl){
+      itemSearchInputEl.addEventListener('input', () => {
+        itemSearchQuery = itemSearchInputEl.value;
+        render();
+        const el = document.getElementById('itemSearchInput');
+        if(el){ el.focus(); const v = el.value; el.setSelectionRange(v.length, v.length); }
       });
     }
 
