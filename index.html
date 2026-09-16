@@ -1,105 +1,2464 @@
-{
-  "myPos": {
-    "enabled": false,
-    "list": [
-      {
-        "name": "myPOS Terminal 1",
-        "provider": "myPos",
-        "apiBaseUrl": "https://sandbox-transactions-api.mypos.com/v1.1/",
-        "oAuthBaseUrl": "https://sandbox-auth-api.mypos.com",
-        "clientId": "MP_TRANSACTIONS_API_CLIENT",
-        "clientSecret": "aECDmr6LYidRxdZfiZckPyxswq3xL5Fr",
-        "tid": "XXXXXXXXXX",
-        "nspCode": "1"
-      }
-    ]
-  },
-  "cardlink": {
-    "enabled": false,
-    "list": [
-      {
-        "name": "Cardlink Terminal 1",
-        "provider": "cardlink",
-        "host": "192.168.1.244",
-        "port": "4000",
-        "ecrid": "8512288",
-        "tid": "XXXXXXXXXX",
-        "nspCode": "1"
-      }
-    ]
-  },
-  "viva_local": {
-    "enabled": true,
-    "list": [
-      {
-        "name": "Tameio",
-        "provider": "viva_local",
-        "host": "192.168.1.8",
-        "port": "9564",
-        "clientId": "7fsttk5oxxbkslj2dy8srcmbueevqdjllyw5jd5ff6hw1.apps.vivapayments.com",
-        "clientSecret": "SpfM5rx0v9OhiTF86Q6vNCr8tS3KwX",
-        "MerchantVATID": "132811457",
-        "terminalMerchantId": "c5b624ca-07d7-42fc-af50-01d10b7fb5c6",
-        "terminalId": "16593920"
-      },
-      {
-        "name": "Tameio.",
-        "provider": "viva_local",
-        "host": "192.168.1.8",
-        "port": "9564",
-        "clientId": "7fsttk5oxxbkslj2dy8srcmbueevqdjllyw5jd5ff6hw1.apps.vivapayments.com",
-        "clientSecret": "SpfM5rx0v9OhiTF86Q6vNCr8tS3KwX",
-        "MerchantVATID": "132811457",
-        "terminalMerchantId": "c5b624ca-07d7-42fc-af50-01d10b7fb5c6",
-        "terminalId": "16593920"
-      },
-      {
-        "name": "George",
-        "provider": "viva_local",
-        "host": "192.168.1.33",
-        "port": "9564",
-        "clientId": "7fsttk5oxxbkslj2dy8srcmbueevqdjllyw5jd5ff6hw1.apps.vivapayments.com",
-        "clientSecret": "SpfM5rx0v9OhiTF86Q6vNCr8tS3KwX",
-        "MerchantVATID": "132811457",
-        "terminalMerchantId": "c5b624ca-07d7-42fc-af50-01d10b7fb5c6",
-        "terminalId": "16778295"
-      },
-      {
-        "name": "Jim",
-        "provider": "viva_local",
-        "host": "192.168.1.34",
-        "port": "9564",
-        "clientId": "7fsttk5oxxbkslj2dy8srcmbueevqdjllyw5jd5ff6hw1.apps.vivapayments.com",
-        "clientSecret": "SpfM5rx0v9OhiTF86Q6vNCr8tS3KwX",
-        "MerchantVATID": "132811457",
-        "terminalMerchantId": "c5b624ca-07d7-42fc-af50-01d10b7fb5c6",
-        "terminalId": "16778329"
-      },
-      {
-        "name": "Mobile 1",
-        "provider": "viva_local",
-        "host": "192.168.1.32",
-        "port": "9564",
-        "clientId": "7fsttk5oxxbkslj2dy8srcmbueevqdjllyw5jd5ff6hw1.apps.vivapayments.com",
-        "clientSecret": "SpfM5rx0v9OhiTF86Q6vNCr8tS3KwX",
-        "MerchantVATID": "132811457",
-        "terminalMerchantId": "c5b624ca-07d7-42fc-af50-01d10b7fb5c6",
-        "terminalId": "16586257"
-      },
-      {
-        "name": "MOBILE 2",
-        "provider": "viva_local",
-        "host": "192.168.1.36",
-        "port": "9564",
-        "clientId": "7fsttk5oxxbkslj2dy8srcmbueevqdjllyw5jd5ff6hw1.apps.vivapayments.com",
-        "clientSecret": "SpfM5rx0v9OhiTF86Q6vNCr8tS3KwX",
-        "MerchantVATID": "132811457",
-        "terminalMerchantId": "c5b624ca-07d7-42fc-af50-01d10b7fb5c6",
-        "terminalId": "16780384"
-      }
-    ],
-    "mode": "live",
-    "delivery_pos_mode": "preloaded",
-    "preloaded_settlement_mode": "article_8_4"
+<!DOCTYPE html>
+<html lang="el">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Παραγγελίες">
+<meta name="theme-color" content="#2F4B3C">
+<title>Παραγγελίες Προμηθευτών</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper: #F3F6F4;
+    --surface: #FFFFFF;
+    --panel: #FFFFFF;
+    --ink: #161B18;
+    --ink-soft: #5B6660;
+    --pine: #16A34A;
+    --pine-dark: #15803D;
+    --stamp: #DC2626;
+    --stamp-dark: #B91C1C;
+    --line: #DCE3DF;
+    --line-soft: #EDF1EF;
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+    --shadow-sm: 0 1px 2px rgba(16,24,40,0.05), 0 1px 3px rgba(16,24,40,0.08);
+    --shadow-md: 0 8px 24px rgba(16,24,40,0.12), 0 2px 6px rgba(16,24,40,0.06);
+    --ease: 150ms ease;
   }
-}
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Inter', sans-serif;
+    min-height:100vh;
+    -webkit-font-smoothing:antialiased;
+  }
+  .app{
+    max-width:1180px;
+    margin:0 auto;
+    padding:32px 20px 64px;
+  }
+  header.top{
+    display:flex;
+    align-items:baseline;
+    justify-content:space-between;
+    flex-wrap:wrap;
+    gap:8px;
+    border-bottom:1px solid var(--line);
+    padding-bottom:18px;
+    margin-bottom:28px;
+  }
+  header.top h1{
+    font-family:'Inter', sans-serif;
+    font-weight:800;
+    font-size:27px;
+    margin:0;
+    letter-spacing:-0.02em;
+  }
+  header.top .today{
+    font-size:14px;
+    color:var(--ink-soft);
+  }
+  .theme-picker{
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  .theme-picker .swatch{
+    width:22px;
+    height:22px;
+    border-radius:50%;
+    border:2px solid var(--surface);
+    cursor:pointer;
+    padding:0;
+    box-shadow:0 0 0 1px var(--line);
+    transition:box-shadow var(--ease), transform var(--ease);
+  }
+  .theme-picker .swatch:hover{transform:scale(1.08);}
+  .theme-picker .swatch.selected{
+    box-shadow:0 0 0 2px var(--surface), 0 0 0 4px var(--ink);
+  }
+  .layout{
+    display:grid;
+    grid-template-columns:300px 1fr;
+    gap:28px;
+    align-items:start;
+  }
+  @media (max-width:860px){
+    .layout{grid-template-columns:1fr;}
+  }
+
+  /* --- Sidebar: suppliers --- */
+  .suppliers h2{
+    font-family:'Inter', sans-serif;
+    font-size:13px;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:0.04em;
+    margin:0 0 10px;
+    color:var(--ink-soft);
+  }
+  .picker-toggle{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    width:100%;
+    gap:8px;
+    font-family:inherit;
+    font-size:14.5px;
+    font-weight:500;
+    padding:11px 14px;
+    border:1px solid var(--line);
+    border-radius:var(--radius-md);
+    background:var(--panel);
+    box-shadow:var(--shadow-sm);
+    color:var(--ink);
+    cursor:pointer;
+    margin-bottom:6px;
+    transition:border-color var(--ease);
+  }
+  .picker-toggle:hover{border-color:var(--pine);}
+  .picker-toggle .chevron{color:var(--ink-soft); font-size:12px;}
+  .picker-toggle .placeholder{color:var(--ink-soft); font-weight:400;}
+  .picker-panel{
+    margin-top:6px;
+  }
+  .picker-search{
+    width:100%;
+    font-family:inherit;
+    font-size:14px;
+    padding:9px 11px;
+    margin-bottom:6px;
+    border:1px solid var(--line);
+    border-radius:var(--radius-sm);
+    background:var(--panel);
+    color:var(--ink);
+    transition:border-color var(--ease), box-shadow var(--ease);
+  }
+  .picker-search:focus{outline:none; border-color:var(--pine); box-shadow:0 0 0 3px rgba(22,163,74,0.15);}
+  .no-match-row{
+    padding:11px 14px;
+    font-size:13.5px;
+    color:var(--ink-soft);
+    border:1px solid var(--line);
+    border-radius:var(--radius-md);
+    background:var(--panel);
+  }
+  .supplier-list{
+    list-style:none;
+    margin:0 0 14px;
+    padding:0;
+    border:1px solid var(--line);
+    border-radius:var(--radius-md);
+    background:var(--panel);
+    box-shadow:var(--shadow-sm);
+    max-height:320px;
+    overflow-y:auto;
+    overflow-x:hidden;
+  }
+  .supplier-row{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:8px;
+    padding:11px 14px;
+    border-bottom:1px solid var(--line-soft);
+    cursor:pointer;
+    transition:background-color var(--ease);
+  }
+  .supplier-row:last-child{border-bottom:none;}
+  .supplier-row:hover{background:var(--surface);}
+  .supplier-row .name{
+    font-weight:500;
+    font-size:14.5px;
+  }
+  .supplier-row.active{
+    background:var(--pine);
+  }
+  .supplier-row.active:hover{background:var(--pine);}
+  .supplier-row.active .name{color:#fff; font-weight:600;}
+  .supplier-row .del{
+    border:none;
+    background:none;
+    color:var(--ink-soft);
+    font-size:13px;
+    cursor:pointer;
+    padding:3px 7px;
+    border-radius:6px;
+    opacity:0.6;
+    transition:opacity var(--ease), background-color var(--ease), color var(--ease);
+  }
+  .supplier-row .del:hover{opacity:1; color:var(--stamp); background:rgba(220,38,38,0.08);}
+  .supplier-row .del.confirming{
+    opacity:1;
+    background:var(--stamp);
+    color:#fff;
+    font-size:11px;
+    font-weight:600;
+    padding:4px 9px;
+    border-radius:999px;
+    white-space:nowrap;
+  }
+  .supplier-row.active .del{color:#fff; opacity:0.7;}
+  .supplier-row.active .del:hover{opacity:1; color:#fff; background:rgba(255,255,255,0.15);}
+  .supplier-count{
+    font-size:12px;
+    color:var(--ink-soft);
+  }
+
+  .add-form{
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:var(--radius-md);
+    box-shadow:var(--shadow-sm);
+    padding:16px;
+    margin-top:8px;
+  }
+  .add-form input{
+    width:100%;
+    font-family:inherit;
+    font-size:14px;
+    padding:9px 11px;
+    margin-bottom:8px;
+    border:1px solid var(--line);
+    border-radius:var(--radius-sm);
+    background:var(--panel);
+    color:var(--ink);
+    transition:border-color var(--ease), box-shadow var(--ease);
+  }
+  .add-form input:focus{outline:none; border-color:var(--pine); box-shadow:0 0 0 3px rgba(22,163,74,0.15);}
+  .btn{
+    font-family:'Inter', sans-serif;
+    font-weight:600;
+    font-size:14px;
+    padding:10px 16px;
+    border:1px solid var(--pine);
+    border-radius:var(--radius-sm);
+    background:var(--pine);
+    color:#fff;
+    cursor:pointer;
+    transition:background-color var(--ease), border-color var(--ease), transform var(--ease), box-shadow var(--ease);
+  }
+  .btn:hover{background:var(--pine-dark); border-color:var(--pine-dark); box-shadow:var(--shadow-sm);}
+  .btn:active{transform:translateY(1px);}
+  .btn.secondary{
+    background:var(--panel);
+    color:var(--pine-dark);
+    border-color:var(--line);
+  }
+  .btn.secondary:hover{background:var(--pine); color:#fff; border-color:var(--pine);}
+  .btn.small{padding:7px 13px; font-size:13px;}
+  .btn.full{width:100%;}
+  .btn.stamp{border-color:var(--stamp); background:var(--stamp);}
+  .btn.stamp:hover{background:var(--stamp-dark); border-color:var(--stamp-dark);}
+  .btn:disabled{opacity:0.4; cursor:not-allowed; transform:none;}
+
+  .toggle-add{
+    background:none;
+    border:1.5px dashed var(--line);
+    border-radius:var(--radius-sm);
+    color:var(--ink-soft);
+    width:100%;
+    padding:10px;
+    font-size:14px;
+    font-family:inherit;
+    cursor:pointer;
+    margin-top:6px;
+    transition:border-color var(--ease), color var(--ease);
+  }
+  .toggle-add:hover{border-color:var(--pine); color:var(--pine-dark);}
+
+  /* --- Main panel --- */
+  .main-empty{
+    padding:60px 20px;
+    text-align:center;
+    color:var(--ink-soft);
+    border:1.5px dashed var(--line);
+    border-radius:var(--radius-lg);
+    background:var(--surface);
+  }
+  .main-empty p{font-size:15px; max-width:360px; margin:0 auto;}
+
+  .panel-header{
+    display:flex;
+    align-items:baseline;
+    justify-content:space-between;
+    flex-wrap:wrap;
+    gap:8px;
+    margin-bottom:6px;
+  }
+  .panel-header h2{
+    font-family:'Inter', sans-serif;
+    font-size:21px;
+    font-weight:700;
+    margin:0;
+    letter-spacing:-0.01em;
+  }
+  .contact-line{
+    font-size:13px;
+    color:var(--ink-soft);
+    margin-bottom:18px;
+    display:flex;
+    align-items:center;
+    gap:10px;
+    flex-wrap:wrap;
+  }
+  .link-btn{
+    border:none;
+    background:none;
+    color:var(--pine-dark);
+    font-family:inherit;
+    font-size:13px;
+    font-weight:600;
+    text-decoration:none;
+    cursor:pointer;
+    padding:0;
+    transition:color var(--ease);
+  }
+  .link-btn:hover{color:var(--stamp); text-decoration:underline;}
+  .header-actions{
+    display:flex;
+    gap:14px;
+    align-items:baseline;
+  }
+  .edit-form{
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:var(--radius-md);
+    box-shadow:var(--shadow-sm);
+    padding:16px;
+    margin-bottom:18px;
+    display:grid;
+    gap:8px;
+  }
+  .edit-form input{
+    font-family:inherit;
+    font-size:14px;
+    padding:9px 11px;
+    border:1px solid var(--line);
+    border-radius:var(--radius-sm);
+    background:var(--panel);
+    color:var(--ink);
+    transition:border-color var(--ease), box-shadow var(--ease);
+  }
+  .edit-form input:focus{outline:none; border-color:var(--pine); box-shadow:0 0 0 3px rgba(22,163,74,0.15);}
+  .edit-form .edit-row{display:flex; gap:8px;}
+  .edit-form .edit-row .btn{flex:1;}
+  .form-error{
+    font-size:12.5px;
+    color:var(--stamp);
+    min-height:0;
+  }
+
+  .items-section{
+    margin-bottom:22px;
+  }
+  .items-section h3{
+    font-size:12px;
+    text-transform:uppercase;
+    letter-spacing:0.04em;
+    font-weight:700;
+    color:var(--ink-soft);
+    margin:0 0 8px;
+  }
+  .items-section-header{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+    flex-wrap:wrap;
+  }
+  .filter-select{
+    font-family:inherit;
+    font-size:13px;
+    padding:7px 9px;
+    border:1px solid var(--line);
+    border-radius:var(--radius-sm);
+    background:var(--panel);
+    color:var(--ink);
+    margin-bottom:8px;
+    transition:border-color var(--ease);
+  }
+  .items-listbox{
+    border:1px solid var(--line);
+    border-radius:var(--radius-md);
+    box-shadow:var(--shadow-sm);
+    background:var(--panel);
+    max-height:360px;
+    overflow-y:auto;
+    margin-bottom:10px;
+  }
+  .items-listbox .items-head{
+    display:grid;
+    grid-template-columns:34px 1fr 90px 96px;
+    gap:6px;
+    padding:9px 12px;
+    font-size:11px;
+    text-transform:uppercase;
+    letter-spacing:0.03em;
+    font-weight:700;
+    color:var(--ink-soft);
+    background:var(--surface);
+    border-bottom:1px solid var(--line);
+    border-radius:var(--radius-md) var(--radius-md) 0 0;
+    position:sticky;
+    top:0;
+  }
+  .category-header{
+    padding:7px 12px;
+    font-size:11.5px;
+    font-weight:700;
+    letter-spacing:0.03em;
+    color:var(--pine-dark);
+    background:var(--surface);
+    border-bottom:1px solid var(--line-soft);
+  }
+  .item-row{
+    display:grid;
+    grid-template-columns:34px 1fr 90px 96px;
+    gap:6px;
+    align-items:center;
+    padding:8px 12px 5px;
+    transition:background-color var(--ease);
+  }
+  .item-row.checked{background:rgba(22,163,74,0.06);}
+  .item-row.excluded{color:#9AA39D;}
+  .item-row .iname{font-size:14px;}
+  .item-row .iunit{font-size:13px; color:var(--ink-soft);}
+  .item-row input[type="number"]{
+    width:100%;
+    font-family:inherit;
+    font-size:14px;
+    padding:6px 7px;
+    border:1px solid var(--line);
+    border-radius:6px;
+    background:var(--panel);
+    color:var(--ink);
+    transition:border-color var(--ease);
+  }
+  .row-actions{
+    display:flex;
+    gap:4px;
+    justify-content:flex-end;
+  }
+  .item-edit-btn, .item-del, .move-btn{
+    border:none;background:none;color:var(--ink-soft);
+    cursor:pointer;font-size:13px;
+    padding:3px;
+    border-radius:5px;
+    transition:color var(--ease), background-color var(--ease);
+  }
+  .move-btn{font-size:11px;}
+  .move-btn:disabled{opacity:0.25; cursor:default;}
+  .move-btn:not(:disabled):hover{color:var(--pine-dark); background:rgba(22,163,74,0.08);}
+  .item-edit-btn:hover{color:var(--pine-dark); background:rgba(22,163,74,0.08);}
+  .item-del:hover{color:var(--stamp); background:rgba(220,38,38,0.08);}
+  .item-price-line{
+    padding:0 12px 8px 44px;
+    font-size:11.5px;
+    color:var(--ink-soft);
+    border-bottom:1px solid var(--line-soft);
+  }
+  .item-price-line.checked{background:rgba(22,163,74,0.06);}
+  .item-price-line.excluded{color:#9AA39D;}
+  .item-row-plain{border-bottom:1px solid var(--line-soft);}
+  input[type="checkbox"]{
+    width:17px;height:17px;
+    accent-color:var(--pine);
+    cursor:pointer;
+  }
+  @media (max-width:420px){
+    .items-listbox .items-head, .item-row{
+      grid-template-columns:28px 1fr 70px 80px;
+      gap:4px;
+      padding-left:8px;
+      padding-right:8px;
+    }
+    .item-row .iunit{font-size:11.5px;}
+  }
+
+  .order-items-list{
+    border:1px solid var(--line);
+    border-radius:var(--radius-md);
+    box-shadow:var(--shadow-sm);
+    background:var(--panel);
+    max-height:280px;
+    overflow-y:auto;
+    margin-bottom:14px;
+  }
+  .order-item-row{
+    display:grid;
+    grid-template-columns:1fr auto 60px 34px;
+    gap:8px;
+    align-items:center;
+    padding:9px 12px;
+    border-bottom:1px solid var(--line-soft);
+  }
+  .order-item-row:last-child{border-bottom:none;}
+  .order-item-row .oi-name{font-size:15px; font-weight:500;}
+  .order-item-row .oi-unit{font-size:13.5px; color:var(--ink-soft);}
+  .qty-stepper{
+    display:flex;
+    align-items:center;
+    gap:6px;
+  }
+  .qty-btn{
+    width:30px;
+    height:30px;
+    flex:0 0 auto;
+    border:1px solid var(--line);
+    border-radius:7px;
+    background:var(--panel);
+    color:var(--ink);
+    font-size:17px;
+    line-height:1;
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    transition:background-color var(--ease), border-color var(--ease);
+  }
+  .qty-btn:hover{background:var(--pine); border-color:var(--pine); color:#fff;}
+  .qty-stepper input[type="number"]{
+    width:72px;
+    text-align:center;
+    padding:6px 4px;
+    font-size:15px;
+  }
+  .order-item-row input[type="number"]{
+    font-family:inherit;
+    font-size:15px;
+    padding:7px 8px;
+    border:1px solid var(--line);
+    border-radius:6px;
+    background:var(--panel);
+    color:var(--ink);
+    transition:border-color var(--ease);
+  }
+  @media (max-width:420px){
+    .order-item-row{grid-template-columns:1fr auto 50px 30px; gap:5px; padding-left:8px; padding-right:8px;}
+    .qty-btn{width:26px; height:26px; font-size:16px;}
+    .qty-stepper input[type="number"]{width:58px; font-size:14.5px;}
+  }
+
+
+  .item-edit-row{
+    padding:12px;
+    border-bottom:1px solid var(--line-soft);
+    background:var(--surface);
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+  }
+  .item-edit-row input, .item-edit-row select{
+    font-family:inherit;
+    font-size:14px;
+    padding:8px 10px;
+    border:1px solid var(--line);
+    border-radius:var(--radius-sm);
+    background:var(--panel);
+    color:var(--ink);
+    flex:1 1 120px;
+    transition:border-color var(--ease);
+  }
+  .item-edit-row .edit-row{
+    flex:1 1 100%;
+    display:flex;
+    gap:8px;
+  }
+  .item-edit-row .edit-row .btn{flex:1;}
+  .item-edit-row .form-error{flex:1 1 100%;}
+
+  .add-item-row{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+    margin-top:4px;
+  }
+  .add-item-row input, .add-item-row select{
+    font-family:inherit; font-size:14px;
+    padding:9px 11px;
+    border:1px solid var(--line);
+    border-radius:var(--radius-sm);
+    background:var(--panel);
+    color:var(--ink);
+    flex:1 1 130px;
+    transition:border-color var(--ease);
+  }
+  .add-item-row input#newItemName{flex:2 1 160px;}
+  .add-item-row button{flex:0 0 auto;}
+
+  .no-items{
+    font-size:14px;
+    color:var(--ink-soft);
+    padding:16px 14px;
+    border:1px dashed var(--line);
+    border-radius:var(--radius-md);
+    background:var(--surface);
+  }
+  .modal-overlay{
+    position:fixed;
+    inset:0;
+    background:rgba(15,18,20,0.5);
+    backdrop-filter:blur(2px);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:20px;
+    z-index:200;
+  }
+  .modal-card{
+    background:var(--paper);
+    border:1px solid var(--line);
+    border-radius:var(--radius-lg);
+    box-shadow:var(--shadow-md);
+    padding:24px 26px;
+    max-width:480px;
+    width:100%;
+    max-height:80vh;
+    overflow-y:auto;
+  }
+  .modal-card h2{
+    font-family:'Inter', sans-serif;
+    font-size:19px;
+    font-weight:700;
+    margin:0 0 14px;
+  }
+  .modal-close-row{
+    display:flex;
+    justify-content:flex-end;
+    margin-top:16px;
+  }
+  .catalog-list{
+    list-style:none;
+    margin:0 0 16px;
+    padding:0;
+    border:1px solid var(--line);
+    border-radius:var(--radius-md);
+    background:var(--panel);
+    max-height:240px;
+    overflow-y:auto;
+  }
+  .catalog-row{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:8px;
+    padding:10px 13px;
+    border-bottom:1px solid var(--line-soft);
+  }
+  .catalog-row:last-child{border-bottom:none;}
+  .catalog-row .cname{font-size:14px; font-weight:500;}
+  .catalog-row .ccat{font-size:12px; color:var(--ink-soft);}
+  .catalog-add-form{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+  }
+  .catalog-add-form input{
+    font-family:inherit; font-size:14px;
+    padding:9px 11px;
+    border:1px solid var(--line);
+    border-radius:var(--radius-sm);
+    background:var(--panel);
+    color:var(--ink);
+    flex:1 1 140px;
+    transition:border-color var(--ease);
+  }
+  .bulk-list{
+    list-style:none;
+    margin:0 0 16px;
+    padding:0;
+    border:1px solid var(--line);
+    border-radius:var(--radius-md);
+    background:var(--panel);
+    max-height:280px;
+    overflow-y:auto;
+  }
+  .bulk-row{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:10px 13px;
+    border-bottom:1px solid var(--line-soft);
+  }
+  .bulk-row:last-child{border-bottom:none;}
+  .bulk-row label{font-size:14px; flex:1;}
+  .bulk-row .ccat{font-size:12px; color:var(--ink-soft);}
+
+  /* --- Receipt / generated text --- */
+  .order-value{
+    display:flex;
+    gap:24px;
+    flex-wrap:wrap;
+    align-items:baseline;
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:var(--radius-md);
+    box-shadow:var(--shadow-sm);
+    padding:14px 20px;
+    margin-bottom:14px;
+    font-family:'IBM Plex Mono', monospace;
+  }
+  .order-value .ov-item{
+    display:flex;
+    flex-direction:column;
+    gap:2px;
+  }
+  .order-value .ov-label{
+    font-size:11px;
+    text-transform:uppercase;
+    letter-spacing:0.04em;
+    color:var(--ink-soft);
+  }
+  .order-value .ov-amount{
+    font-size:17px;
+    font-weight:700;
+  }
+  .order-value .ov-total .ov-amount{color:var(--pine-dark);}
+  .receipt-wrap{
+    display:grid;
+    grid-template-columns:1fr 260px;
+    gap:24px;
+  }
+  @media (max-width:760px){
+    .receipt-wrap{grid-template-columns:1fr;}
+  }
+  .receipt{
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:var(--radius-md);
+    box-shadow:var(--shadow-sm);
+    padding:22px 24px;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:13.5px;
+    line-height:1.7;
+    white-space:pre-wrap;
+    color:var(--ink);
+    min-height:120px;
+  }
+  .receipt .muted{color:var(--ink-soft);}
+  .actions{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+  }
+  .actions .btn{width:100%; text-align:center; text-decoration:none; display:block;}
+  .copied-msg{
+    font-size:12.5px;
+    color:var(--pine-dark);
+    min-height:16px;
+  }
+  a.btn{box-sizing:border-box;}
+
+  /* --- Order history --- */
+  .history-list{
+    list-style:none;
+    margin:0;
+    padding:0;
+    border-top:1px solid var(--line);
+  }
+  .history-entry{
+    border-bottom:1px solid var(--line);
+  }
+  .history-summary{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+    padding:12px 4px;
+    cursor:pointer;
+  }
+  .history-summary .when{
+    font-size:14px;
+    font-weight:500;
+  }
+  .history-summary .count{
+    font-size:12.5px;
+    color:var(--ink-soft);
+  }
+  .history-summary .when{margin-right:auto;}
+  .history-del{
+    border:none;
+    background:none;
+    color:var(--ink-soft);
+    font-size:13px;
+    cursor:pointer;
+    padding:3px 7px;
+    border-radius:6px;
+    opacity:0.6;
+    transition:opacity var(--ease), background-color var(--ease), color var(--ease);
+  }
+  .history-del:hover{opacity:1; color:var(--stamp); background:rgba(220,38,38,0.08);}
+  .history-del.confirming{
+    opacity:1;
+    background:var(--stamp);
+    color:#fff;
+    font-size:11px;
+    font-weight:600;
+    padding:4px 9px;
+    border-radius:999px;
+    white-space:nowrap;
+  }
+  .history-detail{
+    padding:0 4px 14px;
+  }
+  .history-detail pre{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:13px;
+    line-height:1.6;
+    white-space:pre-wrap;
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:var(--radius-md);
+    padding:14px 16px;
+    margin:0 0 10px;
+  }
+  .history-detail .btn{width:auto;}
+  .history-actions{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+    margin-bottom:6px;
+  }
+  .history-actions .btn{
+    font-size:13px;
+    padding:7px 12px;
+    text-decoration:none;
+  }
+  .no-history{
+    font-size:14px;
+    color:var(--ink-soft);
+    padding:10px 0;
+  }
+  .setup-overlay{
+    position:fixed;
+    inset:0;
+    background:rgba(15,18,20,0.5);
+    backdrop-filter:blur(2px);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:20px;
+    z-index:100;
+  }
+  .setup-overlay.hidden{display:none;}
+  .setup-card{
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:var(--radius-lg);
+    box-shadow:var(--shadow-md);
+    padding:28px 30px;
+    max-width:420px;
+    width:100%;
+  }
+  .setup-card h2{
+    font-family:'Inter', sans-serif;
+    font-weight:700;
+    font-size:20px;
+    margin:0 0 12px;
+  }
+  .setup-card p{
+    font-size:13.5px;
+    color:var(--ink-soft);
+    line-height:1.5;
+    margin:0 0 16px;
+  }
+  .setup-card input{
+    width:100%;
+    font-family:inherit;
+    font-size:14px;
+    padding:9px 11px;
+    border:1px solid var(--line);
+    border-radius:var(--radius-sm);
+    background:var(--panel);
+    color:var(--ink);
+    margin-bottom:10px;
+    transition:border-color var(--ease);
+  }
+</style>
+</head>
+<body>
+<div class="app" id="app">
+  <header class="top">
+    <h1>Παραγγελίες Προμηθευτών</h1>
+    <div class="theme-picker" id="themePicker"></div>
+    <div class="today" id="todayLabel"></div>
+  </header>
+  <div class="backup-bar">
+    <span class="backup-note">Τα δεδομένα αποθηκεύονται στη βάση Supabase — συγχρονισμένα σε όλες τις συσκευές σου.</span>
+    <button class="link-btn" id="exportBtn">Λήψη αντιγράφου ασφαλείας</button>
+    <button class="link-btn" id="importBtn">Επαναφορά από αρχείο</button>
+    <button class="link-btn" id="reconnectBtn">Αλλαγή σύνδεσης Supabase</button>
+    <button class="link-btn" id="logoutBtn">Αποσύνδεση</button>
+    <input type="file" id="importFile" accept="application/json" style="display:none;">
+  </div>
+  <div class="layout" id="layout">Φόρτωση…</div>
+</div>
+<div id="modalRoot"></div>
+
+<div class="setup-overlay" id="setupOverlay">
+  <div class="setup-card">
+    <h2>Σύνδεση με Supabase</h2>
+    <p>Επικόλλησε το Project URL και το <strong>anon public</strong> κλειδί από το Supabase project σου (Settings → API). Αποθηκεύονται μόνο σε αυτή τη συσκευή/browser — η ίδια σύνδεση χρειάζεται να μπει και σε κάθε άλλη συσκευή για να βλέπεις τα ίδια δεδομένα.</p>
+    <input type="text" id="setupUrl" placeholder="https://xxxxx.supabase.co">
+    <input type="text" id="setupKey" placeholder="anon public key">
+    <div class="form-error" id="setupError"></div>
+    <button class="btn full" id="setupConnectBtn">Σύνδεση</button>
+  </div>
+</div>
+
+<div class="setup-overlay hidden" id="authOverlay">
+  <div class="setup-card">
+    <h2>Σύνδεση χρήστη</h2>
+    <p>Συνδέσου με email και κωδικό. Αν δεν έχεις ακόμα λογαριασμό, δημιούργησέ έναν παρακάτω — τον χρησιμοποιούν όλοι όσοι δουλεύουν με τις παραγγελίες σας.</p>
+    <input type="email" id="authEmail" placeholder="email@example.com" autocomplete="username">
+    <input type="password" id="authPassword" placeholder="Κωδικός" autocomplete="current-password">
+    <div class="form-error" id="authError"></div>
+    <div class="edit-row" style="display:flex; gap:8px; margin-top:4px;">
+      <button class="btn full" id="authSignInBtn">Σύνδεση</button>
+      <button class="btn secondary full" id="authSignUpBtn">Εγγραφή</button>
+    </div>
+    <button class="link-btn" id="authChangeConnection" style="margin-top:14px;">Αλλαγή σύνδεσης Supabase</button>
+  </div>
+</div>
+
+<script>
+(function(){
+  // Αποθήκευση σε πίνακα Supabase (app_storage: key text primary key, value text, updated_at timestamptz).
+  // Ίδιο async API (get/set/delete) ώστε να μη χρειάζεται αλλαγή στην υπόλοιπη λογική.
+  const CONFIG_URL_KEY = 'supabase-url';
+  const CONFIG_ANON_KEY = 'supabase-anon-key';
+  let sb = null;
+
+  function getSavedConfig(){
+    const url = localStorage.getItem(CONFIG_URL_KEY);
+    const key = localStorage.getItem(CONFIG_ANON_KEY);
+    return (url && key) ? { url, key } : null;
+  }
+
+  function connectSupabase(url, key){
+    sb = supabase.createClient(url, key);
+  }
+
+  const storage = {
+    async get(key){
+      const { data, error } = await sb.from('app_storage').select('value').eq('key', key).maybeSingle();
+      if(error){ console.error('Supabase get error', error); return null; }
+      return data ? { key, value: data.value } : null;
+    },
+    async set(key, value){
+      const { error } = await sb.from('app_storage').upsert(
+        { key, value, updated_at: new Date().toISOString() },
+        { onConflict: 'key' }
+      );
+      if(error){ console.error('Supabase set error', error); return null; }
+      return { key, value };
+    },
+    async delete(key){
+      const { error } = await sb.from('app_storage').delete().eq('key', key);
+      if(error){ console.error('Supabase delete error', error); return null; }
+      return { key, deleted: true };
+    }
+  };
+
+  const STORAGE_KEY = 'suppliers-v1';
+  const THEME_KEY = 'theme-v1';
+  const COUNTER_KEY = 'order-counter-v1';
+  let dailyCounter = { date: '', count: 0 };
+  const CATALOG_KEY = 'catalog-v1';
+  let catalog = []; // { id, name, category }
+  let showCatalogModal = false;
+  let showBulkAddModal = false;
+  let bulkAddCategoryFilter = 'all';
+  let bulkAddSelectedIds = new Set();
+  let pendingDeleteCatalogId = null;
+  let pendingDeleteCatalogTimeout = null;
+  let currentOrderNumbers = {}; // supplierId -> order number assigned to the in-progress draft
+  const THEMES = {
+    pine:   { label:'Πράσινο',  paper:'#F3F6F4', surface:'#FFFFFF', panel:'#FFFFFF', ink:'#161B18', inkSoft:'#5B6660', accent:'#16A34A', accentDark:'#15803D', stamp:'#DC2626', stampDark:'#B91C1C', line:'#DCE3DF', lineSoft:'#EDF1EF' },
+    navy:   { label:'Μπλε',     paper:'#F2F4F8', surface:'#FFFFFF', panel:'#FFFFFF', ink:'#141A24', inkSoft:'#576273', accent:'#2563EB', accentDark:'#1D4ED8', stamp:'#DC2626', stampDark:'#B91C1C', line:'#DCE2EC', lineSoft:'#EEF1F7' },
+    plum:   { label:'Μπορντό',  paper:'#F8F3F6', surface:'#FFFFFF', panel:'#FFFFFF', ink:'#20141C', inkSoft:'#6B5566', accent:'#BE185D', accentDark:'#9D174D', stamp:'#EA580C', stampDark:'#C2410C', line:'#EAD9E3', lineSoft:'#F4E9EF' },
+    slate:  { label:'Γκρι',     paper:'#F4F5F6', surface:'#FFFFFF', panel:'#FFFFFF', ink:'#191C1F', inkSoft:'#5C6570', accent:'#475569', accentDark:'#334155', stamp:'#DC2626', stampDark:'#B91C1C', line:'#DFE2E5', lineSoft:'#EEF0F2' },
+    dark:   { label:'Μαύρο',    paper:'#121316', surface:'#1B1D21', panel:'#1F2125', ink:'#F1F2F4', inkSoft:'#9CA3AF', accent:'#22C55E', accentDark:'#16A34A', stamp:'#F87171', stampDark:'#EF4444', line:'#2C2F34', lineSoft:'#24262A' }
+  };
+  let currentTheme = 'pine';
+
+  function applyTheme(key){
+    const t = THEMES[key] || THEMES.pine;
+    const root = document.documentElement.style;
+    root.setProperty('--paper', t.paper);
+    root.setProperty('--surface', t.surface);
+    root.setProperty('--ink', t.ink);
+    root.setProperty('--ink-soft', t.inkSoft);
+    root.setProperty('--pine', t.accent);
+    root.setProperty('--pine-dark', t.accentDark);
+    root.setProperty('--stamp', t.stamp);
+    root.setProperty('--stamp-dark', t.stampDark);
+    root.setProperty('--line', t.line);
+    root.setProperty('--line-soft', t.lineSoft);
+    root.setProperty('--panel', t.panel);
+    currentTheme = key;
+    renderThemePicker();
+  }
+
+  function renderThemePicker(){
+    const el = document.getElementById('themePicker');
+    if(!el) return;
+    el.innerHTML = Object.keys(THEMES).map(key => {
+      const t = THEMES[key];
+      return `<button class="swatch ${key === currentTheme ? 'selected' : ''}" style="background:${t.accent}" data-theme="${key}" title="${t.label}" aria-label="${t.label}"></button>`;
+    }).join('');
+    el.querySelectorAll('[data-theme]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        applyTheme(btn.dataset.theme);
+        persistTheme();
+      });
+    });
+  }
+
+  async function persistTheme(){
+    try{ await storage.set(THEME_KEY, currentTheme, false); }
+    catch(e){ console.error('Αποτυχία αποθήκευσης θέματος', e); }
+  }
+
+  async function loadTheme(){
+    try{
+      const res = await storage.get(THEME_KEY, false);
+      if(res && res.value && THEMES[res.value]) currentTheme = res.value;
+    }catch(e){ /* no saved theme yet */ }
+    applyTheme(currentTheme);
+  }
+
+  function todayKey(){
+    const n = new Date();
+    return `${n.getFullYear()}-${String(n.getMonth()+1).padStart(2,'0')}-${String(n.getDate()).padStart(2,'0')}`;
+  }
+
+  async function loadCounter(){
+    try{
+      const res = await storage.get(COUNTER_KEY, false);
+      if(res && res.value) dailyCounter = JSON.parse(res.value);
+    }catch(e){ /* no saved counter yet */ }
+    if(!dailyCounter || dailyCounter.date !== todayKey()){
+      dailyCounter = { date: todayKey(), count: 0 };
+    }
+  }
+
+  async function persistCounter(){
+    try{ await storage.set(COUNTER_KEY, JSON.stringify(dailyCounter), false); }
+    catch(e){ console.error('Αποτυχία αποθήκευσης μετρητή', e); }
+  }
+
+  async function loadCatalog(){
+    try{
+      const res = await storage.get(CATALOG_KEY, false);
+      catalog = res && res.value ? JSON.parse(res.value) : [];
+    }catch(e){ catalog = []; }
+    render();
+  }
+
+  async function persistCatalog(){
+    try{ await storage.set(CATALOG_KEY, JSON.stringify(catalog), false); }
+    catch(e){ console.error('Αποτυχία αποθήκευσης καταλόγου', e); }
+  }
+
+  function getNextOrderNumber(){
+    if(dailyCounter.date !== todayKey()){
+      dailyCounter = { date: todayKey(), count: 0 };
+    }
+    dailyCounter.count += 1;
+    persistCounter();
+    return dailyCounter.count;
+  }
+  let suppliers = [];
+  let selectedId = null;
+  let showAddSupplier = false;
+  let todaySelections = {}; // supplierId -> { itemId: {checked, qty} }
+  let copiedMsg = '';
+  let editingSupplierId = null;
+  let expandedHistoryIds = new Set();
+  let pendingDeleteId = null;
+  let pendingDeleteTimeout = null;
+  let pendingDeleteHistoryId = null;
+  let pendingDeleteHistoryTimeout = null;
+  let categoryFilter = 'all';
+  let editingItemId = null;
+  let supplierPickerOpen = false;
+  let supplierSearchQuery = '';
+  let itemSearchQuery = '';
+  let showItemsModal = false;
+  let showAddItemModal = false;
+  let showCartModal = false;
+
+  const layout = document.getElementById('layout');
+  document.getElementById('todayLabel').textContent = new Date().toLocaleDateString('el-GR', {day:'numeric', month:'long', year:'numeric'});
+
+  function uid(){ return Math.random().toString(36).slice(2,10); }
+
+  async function load(){
+    try{
+      const res = await storage.get(STORAGE_KEY, false);
+      suppliers = res && res.value ? JSON.parse(res.value) : [];
+    }catch(e){
+      suppliers = [];
+    }
+    suppliers.forEach(s => { if(!Array.isArray(s.history)) s.history = []; });
+    if(suppliers.length && !selectedId) selectedId = suppliers[0].id;
+    render();
+  }
+
+  async function persist(){
+    try{
+      await storage.set(STORAGE_KEY, JSON.stringify(suppliers), false);
+    }catch(e){
+      console.error('Αποτυχία αποθήκευσης', e);
+    }
+  }
+
+  function ensureSelections(supplier){
+    if(!todaySelections[supplier.id]) todaySelections[supplier.id] = {};
+    const sel = todaySelections[supplier.id];
+    supplier.items.forEach(it => {
+      if(!sel[it.id]) sel[it.id] = { checked:false, qty: it.defaultQty };
+    });
+    return sel;
+  }
+
+  function esc(s){
+    return (s||'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  }
+
+  function groupItemsByCategory(items){
+    const groups = {};
+    items.forEach(it => {
+      const cat = (it.category || '').trim() || 'Χωρίς κατηγορία';
+      if(!groups[cat]) groups[cat] = [];
+      groups[cat].push(it);
+    });
+    const names = Object.keys(groups).filter(c => c !== 'Χωρίς κατηγορία').sort((a,b) => a.localeCompare(b, 'el'));
+    if(groups['Χωρίς κατηγορία']) names.push('Χωρίς κατηγορία');
+    return names.map(cat => ({ cat, items: groups[cat] }));
+  }
+
+  function moveItemInCategory(supplier, itemId, direction){
+    const item = supplier.items.find(it => it.id === itemId);
+    if(!item) return;
+    const cat = (item.category || '').trim() || 'Χωρίς κατηγορία';
+    const sameCatIndices = [];
+    supplier.items.forEach((it, idx) => {
+      const c = (it.category || '').trim() || 'Χωρίς κατηγορία';
+      if(c === cat) sameCatIndices.push(idx);
+    });
+    const posInGroup = sameCatIndices.findIndex(idx => supplier.items[idx].id === itemId);
+    const swapWith = posInGroup + direction;
+    if(swapWith < 0 || swapWith >= sameCatIndices.length) return;
+    const idxA = sameCatIndices[posInGroup];
+    const idxB = sameCatIndices[swapWith];
+    const tmp = supplier.items[idxA];
+    supplier.items[idxA] = supplier.items[idxB];
+    supplier.items[idxB] = tmp;
+    persist();
+    render();
+  }
+
+  function duplicateItem(supplier, itemId){
+    const item = supplier.items.find(it => it.id === itemId);
+    if(!item) return;
+    const copy = {
+      id: uid(),
+      name: `${item.name} (αντίγραφο)`,
+      unit: item.unit || '',
+      category: item.category || '',
+      defaultQty: item.defaultQty,
+      price: item.price || 0,
+      vat: item.vat || 0
+    };
+    const idx = supplier.items.findIndex(it => it.id === itemId);
+    supplier.items.splice(idx + 1, 0, copy);
+    const sel = ensureSelections(supplier);
+    sel[copy.id] = { checked:false, qty: copy.defaultQty };
+    editingItemId = copy.id;
+    persist();
+    render();
+  }
+
+  function existingCategories(supplier){
+    const set = new Set();
+    supplier.items.forEach(it => { if(it.category && it.category.trim()) set.add(it.category.trim()); });
+    return Array.from(set).sort((a,b) => a.localeCompare(b, 'el'));
+  }
+
+  function existingUnits(){
+    const set = new Set();
+    suppliers.forEach(s => s.items.forEach(it => { if(it.unit && it.unit.trim()) set.add(it.unit.trim()); }));
+    return Array.from(set).sort((a,b) => a.localeCompare(b, 'el'));
+  }
+
+  function fmtMoney(n){
+    return n.toLocaleString('el-GR', { minimumFractionDigits:2, maximumFractionDigits:2 }) + '€';
+  }
+
+  function calcOrderTotals(supplier){
+    const sel = ensureSelections(supplier);
+    const chosen = supplier.items.filter(it => sel[it.id] && sel[it.id].checked && Number(sel[it.id].qty) > 0);
+    let net = 0, vatAmount = 0;
+    let anyPriced = false;
+    chosen.forEach(it => {
+      const qty = Number(sel[it.id].qty);
+      const price = Number(it.price) || 0;
+      if(price > 0){
+        anyPriced = true;
+        const vat = Number(it.vat) || 0;
+        const lineNet = qty * price;
+        net += lineNet;
+        vatAmount += lineNet * (vat / 100);
+      }
+    });
+    return { anyPriced, net, vatAmount, total: net + vatAmount, itemCount: chosen.length };
+  }
+
+  function buildOrderText(supplier){
+    const sel = ensureSelections(supplier);
+    const dateStr = new Date().toLocaleDateString('el-GR', {day:'numeric', month:'long', year:'numeric'});
+    const chosen = supplier.items.filter(it => sel[it.id] && sel[it.id].checked && Number(sel[it.id].qty) > 0);
+    if(chosen.length === 0){
+      return null;
+    }
+    const lines = chosen.map(it => {
+      const qty = Number(sel[it.id].qty);
+      const unitPart = it.unit ? ' ' + it.unit : '';
+      return `- ${it.name}: ${qty}${unitPart}`;
+    });
+    if(!currentOrderNumbers[supplier.id]){
+      currentOrderNumbers[supplier.id] = getNextOrderNumber();
+    }
+    const orderNo = String(currentOrderNumbers[supplier.id]).padStart(3, '0');
+    return `ΠΑΡΑΓΓΕΛΙΑ Νο ${orderNo} – ${dateStr}\nΠρος: ${supplier.name}\n\n${lines.join('\n')}\n\nΕυχαριστώ.`;
+  }
+
+  function startNewOrder(supplier){
+    const sel = {};
+    supplier.items.forEach(it => { sel[it.id] = { checked:false, qty:0 }; });
+    todaySelections[supplier.id] = sel;
+    delete currentOrderNumbers[supplier.id];
+    copiedMsg = '';
+    render();
+  }
+
+  function requestDeleteSupplier(id){
+    if(pendingDeleteId === id){
+      clearTimeout(pendingDeleteTimeout);
+      pendingDeleteId = null;
+      performDeleteSupplier(id);
+    } else {
+      pendingDeleteId = id;
+      clearTimeout(pendingDeleteTimeout);
+      pendingDeleteTimeout = setTimeout(() => { pendingDeleteId = null; render(); }, 4000);
+      render();
+    }
+  }
+
+  function performDeleteSupplier(id){
+    suppliers = suppliers.filter(x => x.id !== id);
+    delete todaySelections[id];
+    if(editingSupplierId === id) editingSupplierId = null;
+    if(selectedId === id) selectedId = suppliers.length ? suppliers[0].id : null;
+    persist();
+    render();
+  }
+
+  function saveOrderToHistory(supplier){
+    const text = buildOrderText(supplier);
+    if(!text) return;
+    const now = new Date();
+    const entry = {
+      id: uid(),
+      dateLabel: now.toLocaleDateString('el-GR', {day:'numeric', month:'long', year:'numeric'}),
+      timeLabel: now.toLocaleTimeString('el-GR', {hour:'2-digit', minute:'2-digit'}),
+      text
+    };
+    supplier.history.unshift(entry);
+    if(supplier.history.length > 30) supplier.history.length = 30;
+    delete currentOrderNumbers[supplier.id];
+    persist();
+    copiedMsg = 'Η παραγγελία καταχωρήθηκε στο ιστορικό.';
+    render();
+  }
+
+  function requestDeleteHistory(supplier, entryId){
+    if(pendingDeleteHistoryId === entryId){
+      clearTimeout(pendingDeleteHistoryTimeout);
+      pendingDeleteHistoryId = null;
+      supplier.history = supplier.history.filter(h => h.id !== entryId);
+      expandedHistoryIds.delete(entryId);
+      persist();
+      render();
+    } else {
+      pendingDeleteHistoryId = entryId;
+      clearTimeout(pendingDeleteHistoryTimeout);
+      pendingDeleteHistoryTimeout = setTimeout(() => { pendingDeleteHistoryId = null; render(); }, 4000);
+      render();
+    }
+  }
+
+  function requestDeleteCatalog(id){
+    if(pendingDeleteCatalogId === id){
+      clearTimeout(pendingDeleteCatalogTimeout);
+      pendingDeleteCatalogId = null;
+      catalog = catalog.filter(p => p.id !== id);
+      persistCatalog();
+      render();
+    } else {
+      pendingDeleteCatalogId = id;
+      clearTimeout(pendingDeleteCatalogTimeout);
+      pendingDeleteCatalogTimeout = setTimeout(() => { pendingDeleteCatalogId = null; render(); }, 4000);
+      render();
+    }
+  }
+
+  function findCatalogByName(name){
+    const norm = name.trim().toLowerCase();
+    return catalog.find(p => p.name.trim().toLowerCase() === norm) || null;
+  }
+
+  function findExistingItemFields(catalogId){
+    for(const s of suppliers){
+      const found = s.items.find(it => it.catalogId === catalogId);
+      if(found) return { unit: found.unit, price: found.price, vat: found.vat, defaultQty: found.defaultQty, category: found.category };
+    }
+    return null;
+  }
+
+  function catalogCategories(){
+    const set = new Set();
+    catalog.forEach(p => { if(p.category && p.category.trim()) set.add(p.category.trim()); });
+    return Array.from(set).sort((a,b) => a.localeCompare(b, 'el'));
+  }
+
+  function renderModals(){
+    const modalRoot = document.getElementById('modalRoot');
+    if(!modalRoot) return;
+
+    if(showCartModal){
+      const selectedSupplier = suppliers.find(s => s.id === selectedId);
+      if(!selectedSupplier){ showCartModal = false; modalRoot.innerHTML = ''; return; }
+      const sel = ensureSelections(selectedSupplier);
+      const orderedItems = selectedSupplier.items.filter(it => sel[it.id] && sel[it.id].checked);
+      const cartTotals = calcOrderTotals(selectedSupplier);
+      modalRoot.innerHTML = `
+        <div class="modal-overlay" id="cartModalOverlay">
+          <div class="modal-card">
+            <h2>🛒 Είδη παραγγελίας</h2>
+            <div class="order-value" id="orderValueCardCart" style="${cartTotals.anyPriced ? '' : 'display:none;'}">
+              <div class="ov-item"><span class="ov-label">Καθαρή αξία</span><span class="ov-amount" id="ovNetCart">${fmtMoney(cartTotals.net)}</span></div>
+              <div class="ov-item"><span class="ov-label">ΦΠΑ</span><span class="ov-amount" id="ovVatCart">${fmtMoney(cartTotals.vatAmount)}</span></div>
+              <div class="ov-item ov-total"><span class="ov-label">Σύνολο παραγγελίας</span><span class="ov-amount" id="ovTotalCart">${fmtMoney(cartTotals.total)}</span></div>
+            </div>
+            ${orderedItems.length === 0
+              ? `<div class="no-items">Δεν έχεις επιλέξει ακόμα είδη. Κλείσε αυτό το παράθυρο και άνοιξε τα "Είδη" για να προσθέσεις.</div>`
+              : `<div class="order-items-list">
+                  ${orderedItems.map(it => `
+                    <div class="order-item-row">
+                      <span class="oi-name">${esc(it.name)}</span>
+                      <span class="qty-stepper">
+                        <button type="button" class="qty-btn" data-qty-dec="${it.id}">−</button>
+                        <input type="number" min="0" step="0.5" data-order-qty="${it.id}" value="${sel[it.id].qty}">
+                        <button type="button" class="qty-btn" data-qty-inc="${it.id}">+</button>
+                      </span>
+                      <span class="oi-unit">${esc(it.unit || '')}</span>
+                      <button class="item-del" data-order-remove="${it.id}" title="Αφαίρεση από την παραγγελία">✕</button>
+                    </div>`).join('')}
+                </div>`
+            }
+            <div class="modal-close-row" style="justify-content:space-between; flex-wrap:wrap; gap:8px;">
+              <div style="display:flex; gap:8px;">
+                <button class="btn secondary" id="cartClearBtn">Καθαρισμός</button>
+                <button class="btn secondary" id="cartAddMoreBtn">+ Προσθήκη</button>
+              </div>
+              <button class="btn secondary" id="closeCartModal">Κλείσιμο</button>
+            </div>
+          </div>
+        </div>`;
+
+      document.getElementById('closeCartModal').addEventListener('click', () => { showCartModal = false; renderModals(); });
+      document.getElementById('cartClearBtn').addEventListener('click', () => { startNewOrder(selectedSupplier); });
+      document.getElementById('cartAddMoreBtn').addEventListener('click', () => {
+        showCartModal = false;
+        showItemsModal = true;
+        render();
+      });
+      document.querySelectorAll('[data-order-qty]').forEach(inp => {
+        inp.addEventListener('input', () => {
+          const s = ensureSelections(selectedSupplier);
+          s[inp.dataset.orderQty].qty = inp.value;
+          copiedMsg = '';
+          const it = selectedSupplier.items.find(x => x.id === inp.dataset.orderQty);
+          const price = it ? Number(it.price) || 0 : 0;
+          if(it && price > 0){
+            const priceLine = document.getElementById(`priceline-${it.id}`);
+            if(priceLine){
+              const vat = Number(it.vat) || 0;
+              const total = Number(inp.value || 0) * price * (1 + vat/100);
+              priceLine.textContent = `${fmtMoney(price)}/${it.unit || 'τεμ.'} · ΦΠΑ ${vat}% · τελική τιμή: ${fmtMoney(total)}`;
+            }
+          }
+          renderReceiptOnly(selectedSupplier);
+        });
+      });
+      document.querySelectorAll('[data-qty-dec]').forEach(btn => {
+        btn.addEventListener('click', () => { adjustOrderQty(selectedSupplier, btn.dataset.qtyDec, -1); });
+      });
+      document.querySelectorAll('[data-qty-inc]').forEach(btn => {
+        btn.addEventListener('click', () => { adjustOrderQty(selectedSupplier, btn.dataset.qtyInc, 1); });
+      });
+      document.querySelectorAll('[data-order-remove]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const s = ensureSelections(selectedSupplier);
+          s[btn.dataset.orderRemove].checked = false;
+          copiedMsg = '';
+          render();
+        });
+      });
+      return;
+    }
+
+    if(showAddItemModal){
+      const selectedSupplier = suppliers.find(s => s.id === selectedId);
+      if(!selectedSupplier){ showAddItemModal = false; modalRoot.innerHTML = ''; return; }
+      modalRoot.innerHTML = `
+        <div class="modal-overlay" id="addItemModalOverlay">
+          <div class="modal-card">
+            <h2>Νέο είδος</h2>
+            <div class="add-item-row" style="margin-bottom:0;">
+              <input type="text" id="newItemName" list="catalogNameOptions" placeholder="Νέο είδος (π.χ. Ντομάτες)">
+              <datalist id="catalogNameOptions">${catalog.map(p => `<option value="${esc(p.name)}">`).join('')}</datalist>
+              <input type="text" id="newItemCategory" list="categoryOptions" placeholder="Κατηγορία (προαιρετικό)">
+              <datalist id="categoryOptions">${existingCategories(selectedSupplier).map(c => `<option value="${esc(c)}">`).join('')}</datalist>
+              <input type="text" id="newItemUnit" list="unitOptions" placeholder="Μονάδα (π.χ. κιλά)">
+              <datalist id="unitOptions">${existingUnits().map(u => `<option value="${esc(u)}">`).join('')}</datalist>
+              <input type="number" id="newItemQty" placeholder="Ποσότητα" min="0" step="0.5">
+              <input type="number" id="newItemPrice" placeholder="Τιμή αγοράς € (προαιρ.)" min="0" step="0.01">
+              <select id="newItemVat">
+                <option value="0">ΦΠΑ 0%</option>
+                <option value="6">ΦΠΑ 6%</option>
+                <option value="13" selected>ΦΠΑ 13%</option>
+                <option value="24">ΦΠΑ 24%</option>
+              </select>
+            </div>
+            <label style="display:flex; align-items:center; gap:6px; font-size:12.5px; color:var(--ink-soft); margin-top:10px;">
+              <input type="checkbox" id="newItemAddToCatalog" checked> Προσθήκη και στον κατάλογο προϊόντων (για γρήγορη αντιστοίχιση σε άλλους προμηθευτές)
+            </label>
+            <div class="form-error" id="newItemError"></div>
+            <div class="modal-close-row">
+              <button class="btn secondary" id="cancelAddItem">Άκυρο</button>
+              <button class="btn" id="addItem">Αποθήκευση</button>
+            </div>
+          </div>
+        </div>`;
+
+      document.getElementById('cancelAddItem').addEventListener('click', () => { showAddItemModal = false; showItemsModal = true; render(); });
+      document.getElementById('addItem').addEventListener('click', () => {
+        const name = document.getElementById('newItemName').value.trim();
+        const errEl = document.getElementById('newItemError');
+        if(!name){ if(errEl) errEl.textContent = 'Συμπλήρωσε το όνομα του είδους.'; return; }
+        if(errEl) errEl.textContent = '';
+        const category = document.getElementById('newItemCategory').value.trim();
+        const unit = document.getElementById('newItemUnit').value.trim();
+        const qtyRaw = document.getElementById('newItemQty').value;
+        const qty = qtyRaw === '' ? 1 : Number(qtyRaw);
+        const priceRaw = document.getElementById('newItemPrice').value;
+        const price = priceRaw === '' ? 0 : Number(priceRaw);
+        const vat = Number(document.getElementById('newItemVat').value) || 0;
+        const item = { id: uid(), name, unit, category, defaultQty: qty, price, vat };
+        const catalogMatch = findCatalogByName(name);
+        if(catalogMatch){
+          item.catalogId = catalogMatch.id;
+        } else if(document.getElementById('newItemAddToCatalog').checked){
+          const newProduct = { id: uid(), name, category };
+          catalog.push(newProduct);
+          item.catalogId = newProduct.id;
+          persistCatalog();
+        }
+        selectedSupplier.items.push(item);
+        ensureSelections(selectedSupplier)[item.id] = { checked:true, qty };
+        persist();
+        showAddItemModal = false;
+        showItemsModal = true;
+        render();
+      });
+      return;
+    }
+
+    if(showItemsModal){
+      const selectedSupplier = suppliers.find(s => s.id === selectedId);
+      if(!selectedSupplier){ showItemsModal = false; modalRoot.innerHTML = ''; return; }
+      const sel = ensureSelections(selectedSupplier);
+      let itemsInner = `
+            <div class="items-section-header">
+              <h3>Είδη που παραγγέλνεις από εδώ</h3>
+              <button class="link-btn" id="openBulkAdd">Προσθήκη από κατάλογο</button>`;
+      if(selectedSupplier.items.length > 0){
+        const cats = existingCategories(selectedSupplier);
+        itemsInner += `
+              <select id="categoryFilter" class="filter-select">
+                <option value="all" ${categoryFilter === 'all' ? 'selected' : ''}>Όλες οι κατηγορίες</option>
+                ${cats.map(c => `<option value="${esc(c)}" ${categoryFilter === c ? 'selected' : ''}>${esc(c)}</option>`).join('')}
+                <option value="__none__" ${categoryFilter === '__none__' ? 'selected' : ''}>Χωρίς κατηγορία</option>
+              </select>`;
+      }
+      itemsInner += `</div>`;
+      if(selectedSupplier.items.length > 0){
+        itemsInner += `<input type="text" id="itemSearchInput" class="picker-search" placeholder="Αναζήτηση είδους…" value="${esc(itemSearchQuery)}">`;
+      }
+
+      if(selectedSupplier.items.length === 0){
+        itemsInner += `<div class="no-items">Δεν έχεις προσθέσει είδη ακόμα. Πρόσθεσε παρακάτω τα είδη που αγοράζεις καθημερινά από τον προμηθευτή.</div>`;
+      } else {
+        const searchNorm = itemSearchQuery.trim().toLowerCase();
+        const groups = groupItemsByCategory(selectedSupplier.items).filter(group => {
+          if(categoryFilter === 'all') return true;
+          if(categoryFilter === '__none__') return group.cat === 'Χωρίς κατηγορία';
+          return group.cat === categoryFilter;
+        }).map(group => ({
+          cat: group.cat,
+          items: group.items.filter(it => it.name.toLowerCase().includes(searchNorm))
+        })).filter(group => group.items.length > 0);
+        if(groups.length === 0){
+          itemsInner += `<div class="no-items">${searchNorm ? 'Κανένα είδος ταιριάζει στην αναζήτηση.' : 'Κανένα είδος σε αυτή την κατηγορία.'}</div>`;
+        } else {
+          itemsInner += `<div class="items-listbox">
+            <div class="items-head"><span></span><span>Είδος</span><span>Μονάδα</span><span></span></div>`;
+          groups.forEach(group => {
+            itemsInner += `<div class="category-header">${esc(group.cat)}</div>`;
+            group.items.forEach((it, idxInGroup) => {
+              const s = sel[it.id];
+              if(editingItemId === it.id){
+                itemsInner += `
+                  <div class="item-edit-row" data-item-edit="${it.id}">
+                    <input type="text" class="ei-name" placeholder="Όνομα" value="${esc(it.name)}">
+                    <input type="text" class="ei-cat" list="categoryOptions" placeholder="Κατηγορία" value="${esc(it.category||'')}">
+                    <input type="text" class="ei-unit" list="unitOptions" placeholder="Μονάδα" value="${esc(it.unit||'')}">
+                    <input type="number" class="ei-qty" placeholder="Συνηθ. ποσότητα" min="0" step="0.5" value="${it.defaultQty}">
+                    <input type="number" class="ei-price" placeholder="Τιμή αγοράς €" min="0" step="0.01" value="${it.price || ''}">
+                    <select class="ei-vat">
+                      <option value="0" ${(!it.vat || it.vat==0) ? 'selected' : ''}>ΦΠΑ 0%</option>
+                      <option value="6" ${it.vat==6 ? 'selected' : ''}>ΦΠΑ 6%</option>
+                      <option value="13" ${it.vat==13 ? 'selected' : ''}>ΦΠΑ 13%</option>
+                      <option value="24" ${it.vat==24 ? 'selected' : ''}>ΦΠΑ 24%</option>
+                    </select>
+                    <div class="form-error" id="itemEditError"></div>
+                    <div class="edit-row">
+                      <button class="btn small" data-save-item="${it.id}">Αποθήκευση</button>
+                      <button class="btn small secondary" data-cancel-item-edit="${it.id}">Άκυρο</button>
+                    </div>
+                    <button class="link-btn" data-duplicate-item="${it.id}" style="margin-top:2px;">Δημιουργία αντιγράφου (νέο είδος)</button>
+                  </div>`;
+              } else {
+                const price = Number(it.price) || 0;
+                itemsInner += `
+                  <div class="item-row ${s.checked ? 'checked' : 'excluded'}" data-item-id="${it.id}">
+                    <input type="checkbox" data-check="${it.id}" ${s.checked ? 'checked' : ''}>
+                    <span class="iname">${esc(it.name)}</span>
+                    <span class="iunit">${esc(it.unit || '—')}</span>
+                    <span class="row-actions">
+                      <button class="move-btn" data-move-up="${it.id}" title="Μετακίνηση πάνω" ${idxInGroup === 0 ? 'disabled' : ''}>▲</button>
+                      <button class="move-btn" data-move-down="${it.id}" title="Μετακίνηση κάτω" ${idxInGroup === group.items.length - 1 ? 'disabled' : ''}>▼</button>
+                      <button class="item-edit-btn" data-edit-item="${it.id}" title="Επεξεργασία είδους">✎</button>
+                      <button class="item-del" data-del-item="${it.id}" title="Διαγραφή είδους">✕</button>
+                    </span>
+                  </div>
+                  ${price > 0 ? `<div class="item-price-line ${s.checked ? 'checked' : 'excluded'}" id="priceline-${it.id}">${fmtMoney(price)}/${esc(it.unit || 'τεμ.')} · ΦΠΑ ${Number(it.vat)||0}% · τελική τιμή: ${fmtMoney(Number(s.qty) * price * (1 + (Number(it.vat)||0)/100))}</div>` : ''}`;
+              }
+            });
+          });
+          itemsInner += `</div>`;
+        }
+      }
+      itemsInner += `<button class="btn secondary full" id="openAddItemModal" style="margin-top:10px;">+ Νέο είδος</button>`;
+
+      modalRoot.innerHTML = `
+        <div class="modal-overlay" id="itemsModalOverlay">
+          <div class="modal-card" style="max-width:580px;">
+            <h2>Είδη</h2>
+            ${itemsInner}
+            <div class="modal-close-row"><button class="btn secondary" id="closeItemsModal">Κλείσιμο</button></div>
+          </div>
+        </div>`;
+
+      document.getElementById('closeItemsModal').addEventListener('click', () => { showItemsModal = false; renderModals(); });
+      const openAddItemModalBtn = document.getElementById('openAddItemModal');
+      if(openAddItemModalBtn) openAddItemModalBtn.addEventListener('click', () => { showItemsModal = false; showAddItemModal = true; render(); });
+
+      const categoryFilterEl = document.getElementById('categoryFilter');
+      if(categoryFilterEl){
+        categoryFilterEl.addEventListener('change', () => {
+          categoryFilter = categoryFilterEl.value;
+          renderModals();
+        });
+      }
+      const itemSearchInputEl = document.getElementById('itemSearchInput');
+      if(itemSearchInputEl){
+        itemSearchInputEl.addEventListener('input', () => {
+          itemSearchQuery = itemSearchInputEl.value;
+          renderModals();
+          const el = document.getElementById('itemSearchInput');
+          if(el){ el.focus(); const v = el.value; el.setSelectionRange(v.length, v.length); }
+        });
+      }
+      const openBulkAddBtn = document.getElementById('openBulkAdd');
+      if(openBulkAddBtn){
+        openBulkAddBtn.addEventListener('click', () => {
+          showItemsModal = false;
+          showBulkAddModal = true;
+          bulkAddCategoryFilter = 'all';
+          bulkAddSelectedIds = new Set();
+          render();
+        });
+      }
+      document.querySelectorAll('[data-check]').forEach(cb => {
+        cb.addEventListener('change', () => {
+          const s = ensureSelections(selectedSupplier);
+          s[cb.dataset.check].checked = cb.checked;
+          copiedMsg = '';
+          render();
+        });
+      });
+      document.querySelectorAll('[data-del-item]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const id = btn.dataset.delItem;
+          selectedSupplier.items = selectedSupplier.items.filter(it => it.id !== id);
+          persist();
+          render();
+        });
+      });
+      document.querySelectorAll('[data-move-up]').forEach(btn => {
+        btn.addEventListener('click', () => moveItemInCategory(selectedSupplier, btn.dataset.moveUp, -1));
+      });
+      document.querySelectorAll('[data-move-down]').forEach(btn => {
+        btn.addEventListener('click', () => moveItemInCategory(selectedSupplier, btn.dataset.moveDown, 1));
+      });
+      document.querySelectorAll('[data-edit-item]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          editingItemId = btn.dataset.editItem;
+          renderModals();
+        });
+      });
+      document.querySelectorAll('[data-cancel-item-edit]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          editingItemId = null;
+          renderModals();
+        });
+      });
+      document.querySelectorAll('[data-duplicate-item]').forEach(btn => {
+        btn.addEventListener('click', () => duplicateItem(selectedSupplier, btn.dataset.duplicateItem));
+      });
+      document.querySelectorAll('[data-save-item]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const id = btn.dataset.saveItem;
+          const it = selectedSupplier.items.find(x => x.id === id);
+          if(!it) return;
+          const row = btn.closest('.item-edit-row');
+          const name = row.querySelector('.ei-name').value.trim();
+          const errEl = row.querySelector('#itemEditError') || document.getElementById('itemEditError');
+          if(!name){ if(errEl) errEl.textContent = 'Το όνομα δεν μπορεί να είναι κενό.'; return; }
+          it.name = name;
+          it.category = row.querySelector('.ei-cat').value.trim();
+          it.unit = row.querySelector('.ei-unit').value.trim();
+          const qtyVal = row.querySelector('.ei-qty').value;
+          it.defaultQty = qtyVal === '' ? 1 : Number(qtyVal);
+          const priceVal = row.querySelector('.ei-price').value;
+          it.price = priceVal === '' ? 0 : Number(priceVal);
+          it.vat = Number(row.querySelector('.ei-vat').value) || 0;
+          editingItemId = null;
+          persist();
+          render();
+        });
+      });
+      return;
+    }
+
+    if(showCatalogModal){
+      modalRoot.innerHTML = `
+        <div class="modal-overlay" id="catalogModalOverlay">
+          <div class="modal-card">
+            <h2>Κατάλογος προϊόντων</h2>
+            <p style="font-size:13px;color:var(--ink-soft);margin:0 0 14px;">Πρόσθεσε εδώ ένα προϊόν μία φορά. Μετά, μέσα σε κάθε προμηθευτή, χρησιμοποίησε «Προσθήκη από κατάλογο» για να το αντιστοιχίσεις γρήγορα, χωρίς να το ξαναγράφεις.</p>
+            <ul class="catalog-list">
+              ${catalog.length === 0
+                ? `<li class="catalog-row"><span class="cname" style="color:var(--ink-soft);">Δεν έχεις προσθέσει ακόμα προϊόντα.</span></li>`
+                : catalog.slice().sort((a,b) => a.name.localeCompare(b.name,'el')).map(p => {
+                    const confirming = pendingDeleteCatalogId === p.id;
+                    return `<li class="catalog-row">
+                      <span><span class="cname">${esc(p.name)}</span>${p.category ? ` <span class="ccat">· ${esc(p.category)}</span>` : ''}</span>
+                      <button class="del ${confirming ? 'confirming' : ''}" data-del-catalog="${p.id}">${confirming ? 'Σίγουρα;' : '✕'}</button>
+                    </li>`;
+                  }).join('')
+              }
+            </ul>
+            <div class="catalog-add-form">
+              <input type="text" id="catName" placeholder="Νέο προϊόν (π.χ. Ντομάτες)">
+              <input type="text" id="catCategory" list="catalogCategoryOptions" placeholder="Κατηγορία (προαιρετικό)">
+              <datalist id="catalogCategoryOptions">${catalogCategories().map(c => `<option value="${esc(c)}">`).join('')}</datalist>
+              <button class="btn small" id="catalogAddBtn">+ Προσθήκη</button>
+            </div>
+            <div class="form-error" id="catalogError"></div>
+            <div class="modal-close-row"><button class="btn secondary" id="closeCatalogModal">Κλείσιμο</button></div>
+          </div>
+        </div>`;
+
+      document.getElementById('closeCatalogModal').addEventListener('click', () => { showCatalogModal = false; render(); });
+      document.querySelectorAll('[data-del-catalog]').forEach(btn => {
+        btn.addEventListener('click', () => requestDeleteCatalog(btn.dataset.delCatalog));
+      });
+      const catalogAddBtn = document.getElementById('catalogAddBtn');
+      if(catalogAddBtn){
+        catalogAddBtn.addEventListener('click', () => {
+          const name = document.getElementById('catName').value.trim();
+          const errEl = document.getElementById('catalogError');
+          if(!name){ if(errEl) errEl.textContent = 'Συμπλήρωσε το όνομα του προϊόντος.'; return; }
+          if(findCatalogByName(name)){ if(errEl) errEl.textContent = 'Υπάρχει ήδη προϊόν με αυτό το όνομα στον κατάλογο.'; return; }
+          const category = document.getElementById('catCategory').value.trim();
+          catalog.push({ id: uid(), name, category });
+          persistCatalog();
+          render();
+        });
+      }
+      return;
+    }
+
+    if(showBulkAddModal){
+      const selectedSupplier = suppliers.find(s => s.id === selectedId);
+      if(!selectedSupplier){ showBulkAddModal = false; modalRoot.innerHTML = ''; return; }
+      const linkedIds = new Set(selectedSupplier.items.map(it => it.catalogId).filter(Boolean));
+      const available = catalog.filter(p => !linkedIds.has(p.id));
+      const availCats = Array.from(new Set(available.filter(p => p.category && p.category.trim()).map(p => p.category.trim()))).sort((a,b) => a.localeCompare(b,'el'));
+      const hasUncategorized = available.some(p => !p.category || !p.category.trim());
+      const visible = available.filter(p => {
+        if(bulkAddCategoryFilter === 'all') return true;
+        if(bulkAddCategoryFilter === '__none__') return !p.category || !p.category.trim();
+        return (p.category || '').trim() === bulkAddCategoryFilter;
+      });
+      modalRoot.innerHTML = `
+        <div class="modal-overlay" id="bulkAddOverlay">
+          <div class="modal-card">
+            <h2>Προσθήκη από κατάλογο σε: ${esc(selectedSupplier.name)}</h2>
+            <p style="font-size:13px;color:var(--ink-soft);margin:0 0 14px;">Επίλεξε ποια προϊόντα του καταλόγου αγοράζεις από αυτόν τον προμηθευτή. Θα προστεθούν με τιμή/μονάδα κενά — τα συμπληρώνεις μετά με το ✎.</p>
+            ${available.length > 0 ? `
+            <select id="bulkCategoryFilter" class="filter-select">
+              <option value="all" ${bulkAddCategoryFilter === 'all' ? 'selected' : ''}>Όλες οι κατηγορίες</option>
+              ${availCats.map(c => `<option value="${esc(c)}" ${bulkAddCategoryFilter === c ? 'selected' : ''}>${esc(c)}</option>`).join('')}
+              ${hasUncategorized ? `<option value="__none__" ${bulkAddCategoryFilter === '__none__' ? 'selected' : ''}>Χωρίς κατηγορία</option>` : ''}
+            </select>` : ''}
+            ${visible.length > 0 ? `
+            <div style="display:flex; gap:14px; margin-bottom:8px;">
+              <button class="link-btn" id="bulkSelectAll">Επιλογή όλων</button>
+              <button class="link-btn" id="bulkDeselectAll">Αποεπιλογή όλων</button>
+            </div>` : ''}
+            <ul class="bulk-list">
+              ${available.length === 0
+                ? `<li class="bulk-row"><span style="color:var(--ink-soft);">Όλα τα προϊόντα του καταλόγου υπάρχουν ήδη εδώ, ή ο κατάλογος είναι άδειος.</span></li>`
+                : visible.length === 0
+                ? `<li class="bulk-row"><span style="color:var(--ink-soft);">Κανένα προϊόν σε αυτή την κατηγορία.</span></li>`
+                : visible.slice().sort((a,b) => a.name.localeCompare(b.name,'el')).map(p => `
+                    <li class="bulk-row">
+                      <input type="checkbox" class="bulk-check" value="${p.id}" id="bulk-${p.id}" ${bulkAddSelectedIds.has(p.id) ? 'checked' : ''}>
+                      <label for="bulk-${p.id}">${esc(p.name)}${p.category ? ` <span class="ccat">· ${esc(p.category)}</span>` : ''}</label>
+                    </li>`).join('')
+              }
+            </ul>
+            <div class="modal-close-row" style="justify-content:space-between;">
+              <button class="btn secondary" id="closeBulkModal">Άκυρο</button>
+              <button class="btn" id="bulkAddConfirm" ${available.length === 0 ? 'disabled' : ''}>Προσθήκη επιλεγμένων${bulkAddSelectedIds.size > 0 ? ` (${bulkAddSelectedIds.size})` : ''}</button>
+            </div>
+          </div>
+        </div>`;
+
+      document.getElementById('closeBulkModal').addEventListener('click', () => { showBulkAddModal = false; showItemsModal = true; bulkAddCategoryFilter = 'all'; bulkAddSelectedIds = new Set(); render(); });
+      const bulkCategoryFilterEl = document.getElementById('bulkCategoryFilter');
+      if(bulkCategoryFilterEl){
+        bulkCategoryFilterEl.addEventListener('change', () => {
+          bulkAddCategoryFilter = bulkCategoryFilterEl.value;
+          renderModals();
+        });
+      }
+      const bulkSelectAllBtn = document.getElementById('bulkSelectAll');
+      if(bulkSelectAllBtn){
+        bulkSelectAllBtn.addEventListener('click', () => {
+          visible.forEach(p => bulkAddSelectedIds.add(p.id));
+          renderModals();
+        });
+      }
+      const bulkDeselectAllBtn = document.getElementById('bulkDeselectAll');
+      if(bulkDeselectAllBtn){
+        bulkDeselectAllBtn.addEventListener('click', () => {
+          visible.forEach(p => bulkAddSelectedIds.delete(p.id));
+          renderModals();
+        });
+      }
+      document.querySelectorAll('.bulk-check').forEach(cb => {
+        cb.addEventListener('change', () => {
+          if(cb.checked) bulkAddSelectedIds.add(cb.value);
+          else bulkAddSelectedIds.delete(cb.value);
+          const confirmBtn2 = document.getElementById('bulkAddConfirm');
+          if(confirmBtn2) confirmBtn2.textContent = `Προσθήκη επιλεγμένων${bulkAddSelectedIds.size > 0 ? ` (${bulkAddSelectedIds.size})` : ''}`;
+        });
+      });
+      const confirmBtn = document.getElementById('bulkAddConfirm');
+      if(confirmBtn){
+        confirmBtn.addEventListener('click', () => {
+          const checked = Array.from(bulkAddSelectedIds);
+          const sel = ensureSelections(selectedSupplier);
+          checked.forEach(pid => {
+            const p = catalog.find(x => x.id === pid);
+            if(!p) return;
+            const existing = findExistingItemFields(p.id);
+            const item = {
+              id: uid(),
+              name: p.name,
+              category: p.category || '',
+              unit: existing ? (existing.unit || '') : '',
+              defaultQty: existing ? existing.defaultQty : 1,
+              price: existing ? (Number(existing.price) || 0) : 0,
+              vat: existing ? (Number(existing.vat) || 0) : 13,
+              catalogId: p.id
+            };
+            selectedSupplier.items.push(item);
+            sel[item.id] = { checked:false, qty: item.defaultQty };
+          });
+          showBulkAddModal = false;
+          showItemsModal = true;
+          bulkAddSelectedIds = new Set();
+          persist();
+          render();
+        });
+      }
+      return;
+    }
+
+    modalRoot.innerHTML = '';
+  }
+
+  function render(){
+    if(suppliers.length === 0 && !showAddSupplier){
+      layout.innerHTML = `
+        <div class="suppliers">
+          <h2>Προμηθευτές</h2>
+          <button class="toggle-add" id="openAdd">+ Προσθήκη προμηθευτή</button>
+          <button class="link-btn" id="openCatalog" style="margin-top:8px;">Κατάλογος προϊόντων</button>
+        </div>
+        <div class="main-empty">
+          <p>Δεν έχεις προσθέσει κανέναν προμηθευτή ακόμα. Ξεκίνα προσθέτοντας έναν προμηθευτή και τα είδη που παραγγέλνεις καθημερινά από αυτόν.</p>
+        </div>`;
+      document.getElementById('openAdd').onclick = () => { showAddSupplier = true; render(); };
+      document.getElementById('openCatalog').onclick = () => { showCatalogModal = true; render(); };
+      renderModals();
+      return;
+    }
+
+    const selectedSupplier = suppliers.find(s => s.id === selectedId);
+    const filteredSuppliers = suppliers.filter(s => s.name.toLowerCase().includes(supplierSearchQuery.trim().toLowerCase()));
+
+    let sidebarHtml = `<div class="suppliers">
+      <h2>Προμηθευτές</h2>
+      <button class="picker-toggle" id="supplierPickerToggle">
+        <span class="${selectedSupplier ? '' : 'placeholder'}">${selectedSupplier ? esc(selectedSupplier.name) : 'Επίλεξε προμηθευτή'}</span>
+        <span class="chevron">${supplierPickerOpen ? '▴' : '▾'}</span>
+      </button>`;
+
+    if(supplierPickerOpen){
+      sidebarHtml += `
+      <div class="picker-panel">
+        <input type="text" id="supplierSearchInput" class="picker-search" placeholder="Αναζήτηση προμηθευτή…" value="${esc(supplierSearchQuery)}">
+        ${filteredSuppliers.length === 0 ? `<div class="no-match-row">Καμία αντιστοιχία.</div>` : `
+        <ul class="supplier-list">`}
+        `;
+      filteredSuppliers.forEach(s => {
+        const confirming = pendingDeleteId === s.id;
+        sidebarHtml += `
+        <li class="supplier-row ${s.id === selectedId ? 'active' : ''}" data-id="${s.id}">
+          <span class="name">${esc(s.name)}</span>
+          <button class="del ${confirming ? 'confirming' : ''}" data-del-supplier="${s.id}" title="${confirming ? 'Πάτα ξανά για επιβεβαίωση' : 'Διαγραφή προμηθευτή'}">${confirming ? 'Σίγουρα;' : '✕'}</button>
+        </li>`;
+      });
+      if(filteredSuppliers.length > 0) sidebarHtml += `</ul>`;
+      sidebarHtml += `</div>`;
+    }
+
+    if(showAddSupplier){
+      sidebarHtml += `
+        <div class="add-form">
+          <input type="text" id="newSupplierName" placeholder="Όνομα προμηθευτή">
+          <input type="text" id="newSupplierEmail" placeholder="Email (προαιρετικό)">
+          <input type="text" id="newSupplierPhone" placeholder="Τηλέφωνο (προαιρετικό)">
+          <div class="form-error" id="newSupplierError"></div>
+          <button class="btn full" id="saveSupplier">Αποθήκευση</button>
+        </div>`;
+    } else {
+      sidebarHtml += `<button class="toggle-add" id="openAdd">+ Προσθήκη προμηθευτή</button>`;
+    }
+    sidebarHtml += `<button class="link-btn" id="openCatalog" style="margin-top:10px;">Κατάλογος προϊόντων</button>`;
+    sidebarHtml += `</div>`;
+
+    let mainHtml = '';
+    if(selectedSupplier){
+      const sel = ensureSelections(selectedSupplier);
+      const contactBits = [];
+      if(selectedSupplier.email) contactBits.push(selectedSupplier.email);
+      if(selectedSupplier.phone) contactBits.push(selectedSupplier.phone);
+
+      const isEditing = editingSupplierId === selectedSupplier.id;
+
+      mainHtml += `
+        <div>
+          <div class="panel-header">
+            <h2>${esc(selectedSupplier.name)}</h2>
+            <div class="header-actions">
+              <button class="link-btn" id="startNewOrderBtn">Νέα παραγγελία</button>
+            </div>
+          </div>`;
+
+      if(isEditing){
+        mainHtml += `
+          <div class="edit-form">
+            <input type="text" id="editName" placeholder="Όνομα προμηθευτή" value="${esc(selectedSupplier.name)}">
+            <input type="text" id="editEmail" placeholder="Email (προαιρετικό)" value="${esc(selectedSupplier.email||'')}">
+            <input type="text" id="editPhone" placeholder="Τηλέφωνο (προαιρετικό)" value="${esc(selectedSupplier.phone||'')}">
+            <div class="form-error" id="editSupplierError"></div>
+            <div class="edit-row">
+              <button class="btn" id="saveEditBtn">Αποθήκευση στοιχείων</button>
+              <button class="btn secondary" id="cancelEditBtn">Άκυρο</button>
+            </div>
+            <button class="link-btn" id="deleteSupplierBtn" style="color:var(--stamp); margin-top:2px;">${pendingDeleteId === selectedSupplier.id ? 'Σίγουρα; Πάτα ξανά για οριστική διαγραφή' : 'Διαγραφή προμηθευτή'}</button>
+          </div>`;
+      } else {
+        mainHtml += `<div class="contact-line">
+            <span>${contactBits.length ? esc(contactBits.join('  ·  ')) : 'Δεν έχουν καταχωρηθεί στοιχεία επικοινωνίας'}</span>
+            <button class="link-btn" id="editSupplierBtn">Επεξεργασία στοιχείων</button>
+          </div>`;
+      }
+
+      const checkedCount = selectedSupplier.items.filter(it => sel[it.id] && sel[it.id].checked).length;
+      mainHtml += `
+          <div class="items-section">
+            <button class="picker-toggle" id="itemsPickerToggle">
+              <span>${checkedCount} από ${selectedSupplier.items.length} είδη επιλεγμένα</span>
+              <span class="chevron">›</span>
+            </button>
+          </div>`;
+
+      const orderedItems = selectedSupplier.items.filter(it => sel[it.id] && sel[it.id].checked);
+      mainHtml += `
+          <div class="items-section">
+            <button class="picker-toggle" id="orderItemsPickerToggle">
+              <span>🛒 ${orderedItems.length} είδη στην παραγγελία</span>
+              <span class="chevron">›</span>
+            </button>
+          </div>`;
+
+      const orderText = buildOrderText(selectedSupplier);
+      const encoded = orderText ? encodeURIComponent(orderText) : '';
+      const dateStr = new Date().toLocaleDateString('el-GR', {day:'numeric', month:'long', year:'numeric'});
+      const subject = encodeURIComponent(`Παραγγελία – ${dateStr}`);
+      const phoneDigits = (selectedSupplier.phone || '').replace(/[^\d+]/g, '');
+      const totals = calcOrderTotals(selectedSupplier);
+
+      mainHtml += `
+          <div class="items-section">
+            <h3>Κείμενο παραγγελίας</h3>
+            <div class="order-value" id="orderValueCard" style="${totals.anyPriced ? '' : 'display:none;'}">
+              <div class="ov-item"><span class="ov-label">Καθαρή αξία</span><span class="ov-amount" id="ovNet">${fmtMoney(totals.net)}</span></div>
+              <div class="ov-item"><span class="ov-label">ΦΠΑ</span><span class="ov-amount" id="ovVat">${fmtMoney(totals.vatAmount)}</span></div>
+              <div class="ov-item ov-total"><span class="ov-label">Σύνολο παραγγελίας</span><span class="ov-amount" id="ovTotal">${fmtMoney(totals.total)}</span></div>
+            </div>
+            <div class="receipt-wrap">
+              <div class="receipt">${orderText ? esc(orderText) : '<span class="muted">Επίλεξε τουλάχιστον ένα είδος με ποσότητα μεγαλύτερη από 0 για να δημιουργηθεί η παραγγελία.</span>'}</div>
+              <div class="actions">
+                <button class="btn full" id="copyBtn" ${orderText ? '' : 'disabled'}>Αντιγραφή κειμένου</button>
+                <a class="btn secondary full" href="${orderText ? `mailto:${encodeURIComponent(selectedSupplier.email||'')}?subject=${subject}&body=${encoded}` : '#'}" ${orderText ? '' : 'aria-disabled="true" onclick="return false;"'}>Αποστολή με Email</a>
+                <a class="btn stamp full" href="${orderText ? `https://wa.me/${phoneDigits}?text=${encoded}` : '#'}" target="_blank" rel="noopener" ${orderText ? '' : 'aria-disabled="true" onclick="return false;"'}>Αποστολή με WhatsApp</a>
+                <a class="btn secondary full" href="${orderText ? `viber://forward?text=${encoded}` : '#'}" ${orderText ? '' : 'aria-disabled="true" onclick="return false;"'}>Αποστολή με Viber</a>
+                <button class="btn secondary full" id="saveHistoryBtn" ${orderText ? '' : 'disabled'}>Καταχώρηση παραγγελίας</button>
+                <button class="link-btn" id="clearOrderBtn">Καθαρισμός παραγγελίας</button>
+                <div class="copied-msg" id="copiedMsg">${copiedMsg}</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="items-section">
+            <h3>Ιστορικό παραγγελιών</h3>`;
+
+      if(selectedSupplier.history.length === 0){
+        mainHtml += `<div class="no-history">Δεν έχεις καταχωρήσει ακόμα καμία παραγγελία σε αυτόν τον προμηθευτή.</div>`;
+      } else {
+        mainHtml += `<ul class="history-list">`;
+        selectedSupplier.history.forEach(h => {
+          const itemCount = (h.text.match(/^- /gm) || []).length;
+          const open = expandedHistoryIds.has(h.id);
+          const confirmingHist = pendingDeleteHistoryId === h.id;
+          mainHtml += `
+            <li class="history-entry">
+              <div class="history-summary" data-toggle-history="${h.id}">
+                <span class="when">${esc(h.dateLabel)} · ${esc(h.timeLabel)}</span>
+                <span class="count">${itemCount} είδ${itemCount === 1 ? 'ος' : 'η'}</span>
+                <button class="history-del ${confirmingHist ? 'confirming' : ''}" data-del-history="${h.id}" title="${confirmingHist ? 'Πάτα ξανά για επιβεβαίωση' : 'Διαγραφή παραγγελίας'}">${confirmingHist ? 'Σίγουρα;' : '✕'}</button>
+              </div>
+              ${open ? `
+                <div class="history-detail">
+                  <pre>${esc(h.text)}</pre>
+                  <div class="history-actions">
+                    <button class="btn small secondary" data-reuse-history="${h.id}">Χρήση ποσοτήτων ξανά</button>
+                    <button class="btn small secondary" data-hist-copy="${h.id}">Αντιγραφή</button>
+                    <a class="btn small secondary" href="mailto:${encodeURIComponent(selectedSupplier.email||'')}?subject=${encodeURIComponent(`Παραγγελία – ${h.dateLabel}`)}&body=${encodeURIComponent(h.text)}">Email</a>
+                    <a class="btn small stamp" href="https://wa.me/${(selectedSupplier.phone||'').replace(/[^\d+]/g,'')}?text=${encodeURIComponent(h.text)}" target="_blank" rel="noopener">WhatsApp</a>
+                    <a class="btn small secondary" href="viber://forward?text=${encodeURIComponent(h.text)}">Viber</a>
+                  </div>
+                  <div class="copied-msg" id="histCopied-${h.id}"></div>
+                </div>` : ''}
+            </li>`;
+        });
+        mainHtml += `</ul>`;
+      }
+
+      mainHtml += `
+          </div>
+        </div>`;
+    } else {
+      mainHtml = `<div class="main-empty"><p>Επίλεξε έναν προμηθευτή από αριστερά.</p></div>`;
+    }
+
+    layout.innerHTML = sidebarHtml + mainHtml;
+    attachEvents(selectedSupplier);
+    const openCatalog = document.getElementById('openCatalog');
+    if(openCatalog) openCatalog.addEventListener('click', () => { showCatalogModal = true; render(); });
+    renderModals();
+  }
+
+  function attachEvents(selectedSupplier){
+    const supplierPickerToggle = document.getElementById('supplierPickerToggle');
+    if(supplierPickerToggle){
+      supplierPickerToggle.addEventListener('click', () => {
+        supplierPickerOpen = !supplierPickerOpen;
+        if(supplierPickerOpen) supplierSearchQuery = '';
+        render();
+        if(supplierPickerOpen){
+          const el = document.getElementById('supplierSearchInput');
+          if(el) el.focus();
+        }
+      });
+    }
+    const itemsPickerToggle = document.getElementById('itemsPickerToggle');
+    if(itemsPickerToggle){
+      itemsPickerToggle.addEventListener('click', () => {
+        showItemsModal = true;
+        render();
+      });
+    }
+    const orderItemsPickerToggle = document.getElementById('orderItemsPickerToggle');
+    if(orderItemsPickerToggle){
+      orderItemsPickerToggle.addEventListener('click', () => {
+        showCartModal = true;
+        render();
+      });
+    }
+    const supplierSearchInputEl = document.getElementById('supplierSearchInput');
+    if(supplierSearchInputEl){
+      supplierSearchInputEl.addEventListener('input', () => {
+        supplierSearchQuery = supplierSearchInputEl.value;
+        render();
+        const el = document.getElementById('supplierSearchInput');
+        if(el){ el.focus(); const v = el.value; el.setSelectionRange(v.length, v.length); }
+      });
+      supplierSearchInputEl.addEventListener('keydown', (e) => {
+        if(e.key === 'Escape'){ supplierPickerOpen = false; render(); }
+      });
+    }
+    document.querySelectorAll('.supplier-row').forEach(row => {
+      row.addEventListener('click', (e) => {
+        if(e.target.closest('[data-del-supplier]')) return;
+        selectedId = row.dataset.id;
+        copiedMsg = '';
+        pendingDeleteId = null;
+        clearTimeout(pendingDeleteTimeout);
+        pendingDeleteHistoryId = null;
+        clearTimeout(pendingDeleteHistoryTimeout);
+        categoryFilter = 'all';
+        itemSearchQuery = '';
+        editingItemId = null;
+        supplierPickerOpen = false;
+        showAddItemModal = false;
+        showItemsModal = false;
+        showCartModal = false;
+        render();
+      });
+    });
+    document.querySelectorAll('[data-del-supplier]').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        requestDeleteSupplier(btn.dataset.delSupplier);
+      });
+    });
+
+    const openAdd = document.getElementById('openAdd');
+    if(openAdd) openAdd.addEventListener('click', () => { showAddSupplier = true; render(); document.getElementById('newSupplierName').focus(); });
+
+    const saveSupplier = document.getElementById('saveSupplier');
+    if(saveSupplier){
+      saveSupplier.addEventListener('click', () => {
+        const name = document.getElementById('newSupplierName').value.trim();
+        const errEl = document.getElementById('newSupplierError');
+        if(!name){ if(errEl) errEl.textContent = 'Συμπλήρωσε το όνομα του προμηθευτή.'; return; }
+        if(errEl) errEl.textContent = '';
+        const email = document.getElementById('newSupplierEmail').value.trim();
+        const phone = document.getElementById('newSupplierPhone').value.trim();
+        const s = { id: uid(), name, email, phone, items: [], history: [] };
+        suppliers.push(s);
+        selectedId = s.id;
+        showAddSupplier = false;
+        persist();
+        render();
+      });
+    }
+
+    if(!selectedSupplier) return;
+
+    const editBtn = document.getElementById('editSupplierBtn');
+    if(editBtn) editBtn.addEventListener('click', () => { editingSupplierId = selectedSupplier.id; render(); });
+
+    const cancelEditBtn = document.getElementById('cancelEditBtn');
+    if(cancelEditBtn) cancelEditBtn.addEventListener('click', () => { editingSupplierId = null; render(); });
+
+    const deleteSupplierBtn = document.getElementById('deleteSupplierBtn');
+    if(deleteSupplierBtn) deleteSupplierBtn.addEventListener('click', () => requestDeleteSupplier(selectedSupplier.id));
+
+    const saveEditBtn = document.getElementById('saveEditBtn');
+    if(saveEditBtn){
+      saveEditBtn.addEventListener('click', () => {
+        const name = document.getElementById('editName').value.trim();
+        const errEl = document.getElementById('editSupplierError');
+        if(!name){ if(errEl) errEl.textContent = 'Το όνομα του προμηθευτή δεν μπορεί να είναι κενό.'; return; }
+        selectedSupplier.name = name;
+        selectedSupplier.email = document.getElementById('editEmail').value.trim();
+        selectedSupplier.phone = document.getElementById('editPhone').value.trim();
+        editingSupplierId = null;
+        persist();
+        render();
+      });
+    }
+
+    const startNewOrderBtn = document.getElementById('startNewOrderBtn');
+    if(startNewOrderBtn) startNewOrderBtn.addEventListener('click', () => startNewOrder(selectedSupplier));
+
+    const saveHistoryBtn = document.getElementById('saveHistoryBtn');
+    if(saveHistoryBtn) saveHistoryBtn.addEventListener('click', () => saveOrderToHistory(selectedSupplier));
+
+    const clearOrderBtn = document.getElementById('clearOrderBtn');
+    if(clearOrderBtn) clearOrderBtn.addEventListener('click', () => startNewOrder(selectedSupplier));
+
+    document.querySelectorAll('[data-toggle-history]').forEach(el => {
+      el.addEventListener('click', (e) => {
+        if(e.target.closest('[data-del-history]')) return;
+        const id = el.dataset.toggleHistory;
+        if(expandedHistoryIds.has(id)) expandedHistoryIds.delete(id);
+        else expandedHistoryIds.add(id);
+        render();
+      });
+    });
+    document.querySelectorAll('[data-del-history]').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        requestDeleteHistory(selectedSupplier, btn.dataset.delHistory);
+      });
+    });
+    document.querySelectorAll('[data-reuse-history]').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const entry = selectedSupplier.history.find(h => h.id === btn.dataset.reuseHistory);
+        if(!entry) return;
+        const sel = ensureSelections(selectedSupplier);
+        selectedSupplier.items.forEach(it => { sel[it.id].checked = false; });
+        entry.text.split('\n').filter(l => l.startsWith('- ')).forEach(line => {
+          const body = line.slice(2);
+          const colonIdx = body.lastIndexOf(':');
+          if(colonIdx === -1) return;
+          const itemName = body.slice(0, colonIdx).trim();
+          const rest = body.slice(colonIdx + 1).trim();
+          const qty = parseFloat(rest);
+          const match = selectedSupplier.items.find(it => it.name === itemName);
+          if(match && !isNaN(qty)){
+            sel[match.id].checked = true;
+            sel[match.id].qty = qty;
+          }
+        });
+        copiedMsg = 'Οι ποσότητες φορτώθηκαν από την παλιά παραγγελία.';
+        render();
+      });
+    });
+
+    document.querySelectorAll('[data-hist-copy]').forEach(btn => {
+      btn.addEventListener('click', async (e) => {
+        e.stopPropagation();
+        const entry = selectedSupplier.history.find(h => h.id === btn.dataset.histCopy);
+        if(!entry) return;
+        const msgEl = document.getElementById(`histCopied-${entry.id}`);
+        try{
+          await navigator.clipboard.writeText(entry.text);
+          if(msgEl) msgEl.textContent = 'Αντιγράφηκε στο πρόχειρο.';
+        }catch(err){
+          if(msgEl) msgEl.textContent = 'Δεν ήταν δυνατή η αντιγραφή αυτόματα.';
+        }
+      });
+    });
+
+    const copyBtn = document.getElementById('copyBtn');
+    if(copyBtn){
+      copyBtn.addEventListener('click', async () => {
+        const text = buildOrderText(selectedSupplier);
+        if(!text) return;
+        try{
+          await navigator.clipboard.writeText(text);
+          copiedMsg = 'Αντιγράφηκε στο πρόχειρο.';
+        }catch(e){
+          copiedMsg = 'Δεν ήταν δυνατή η αντιγραφή αυτόματα — επίλεξε και αντέγραψε το κείμενο.';
+        }
+        const el = document.getElementById('copiedMsg');
+        if(el) el.textContent = copiedMsg;
+      });
+    }
+  }
+
+  // lightweight partial re-render for qty typing so focus isn't lost while typing
+  function adjustOrderQty(supplier, itemId, delta){
+    const sel = ensureSelections(supplier);
+    const current = Number(sel[itemId].qty) || 0;
+    const next = Math.max(0, current + delta);
+    sel[itemId].qty = next;
+    const inp = document.querySelector(`[data-order-qty="${itemId}"]`);
+    if(inp) inp.value = next;
+    copiedMsg = '';
+    const it = supplier.items.find(x => x.id === itemId);
+    const price = it ? Number(it.price) || 0 : 0;
+    if(it && price > 0){
+      const priceLine = document.getElementById(`priceline-${it.id}`);
+      if(priceLine){
+        const vat = Number(it.vat) || 0;
+        const total = next * price * (1 + vat/100);
+        priceLine.textContent = `${fmtMoney(price)}/${it.unit || 'τεμ.'} · ΦΠΑ ${vat}% · τελική τιμή: ${fmtMoney(total)}`;
+      }
+    }
+    renderReceiptOnly(supplier);
+  }
+
+  function renderReceiptOnly(selectedSupplier){
+    const receiptEl = document.querySelector('.receipt');
+    const orderText = buildOrderText(selectedSupplier);
+    if(receiptEl){
+      receiptEl.innerHTML = orderText ? esc(orderText) : '<span class="muted">Επίλεξε τουλάχιστον ένα είδος με ποσότητα μεγαλύτερη από 0 για να δημιουργηθεί η παραγγελία.</span>';
+    }
+    const totals = calcOrderTotals(selectedSupplier);
+    const ovCard = document.getElementById('orderValueCard');
+    if(ovCard){
+      ovCard.style.display = totals.anyPriced ? '' : 'none';
+      const ovNet = document.getElementById('ovNet');
+      const ovVat = document.getElementById('ovVat');
+      const ovTotal = document.getElementById('ovTotal');
+      if(ovNet) ovNet.textContent = fmtMoney(totals.net);
+      if(ovVat) ovVat.textContent = fmtMoney(totals.vatAmount);
+      if(ovTotal) ovTotal.textContent = fmtMoney(totals.total);
+    }
+    const ovCardCart = document.getElementById('orderValueCardCart');
+    if(ovCardCart){
+      ovCardCart.style.display = totals.anyPriced ? '' : 'none';
+      const ovNetCart = document.getElementById('ovNetCart');
+      const ovVatCart = document.getElementById('ovVatCart');
+      const ovTotalCart = document.getElementById('ovTotalCart');
+      if(ovNetCart) ovNetCart.textContent = fmtMoney(totals.net);
+      if(ovVatCart) ovVatCart.textContent = fmtMoney(totals.vatAmount);
+      if(ovTotalCart) ovTotalCart.textContent = fmtMoney(totals.total);
+    }
+    const encoded = orderText ? encodeURIComponent(orderText) : '';
+    const dateStr = new Date().toLocaleDateString('el-GR', {day:'numeric', month:'long', year:'numeric'});
+    const subject = encodeURIComponent(`Παραγγελία – ${dateStr}`);
+    const phoneDigits = (selectedSupplier.phone || '').replace(/[^\d+]/g, '');
+    const copyBtn = document.getElementById('copyBtn');
+    const saveHistoryBtn = document.getElementById('saveHistoryBtn');
+    const emailLink = document.querySelectorAll('.actions a.btn')[0];
+    const waLink = document.querySelectorAll('.actions a.btn')[1];
+    if(copyBtn) copyBtn.disabled = !orderText;
+    if(saveHistoryBtn) saveHistoryBtn.disabled = !orderText;
+    if(emailLink){
+      emailLink.href = orderText ? `mailto:${encodeURIComponent(selectedSupplier.email||'')}?subject=${subject}&body=${encoded}` : '#';
+    }
+    if(waLink){
+      waLink.href = orderText ? `https://wa.me/${phoneDigits}?text=${encoded}` : '#';
+    }
+    persist();
+  }
+
+  async function exportData(){
+    const payload = {
+      exportedAt: new Date().toISOString(),
+      suppliers,
+      theme: currentTheme,
+      counter: dailyCounter
+    };
+    const blob = new Blob([JSON.stringify(payload, null, 2)], { type:'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `paraggelies-backup-${todayKey()}.json`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }
+
+  function importDataFromFile(file){
+    const reader = new FileReader();
+    reader.onload = async () => {
+      try{
+        const data = JSON.parse(reader.result);
+        if(!Array.isArray(data.suppliers)) throw new Error('Μη έγκυρο αρχείο');
+        suppliers = data.suppliers;
+        suppliers.forEach(s => { if(!Array.isArray(s.history)) s.history = []; });
+        if(data.theme && THEMES[data.theme]) applyTheme(data.theme);
+        if(data.counter) dailyCounter = data.counter;
+        selectedId = suppliers.length ? suppliers[0].id : null;
+        todaySelections = {};
+        currentOrderNumbers = {};
+        await persist();
+        await persistCounter();
+        render();
+      }catch(e){
+        showImportError();
+      }
+    };
+    reader.readAsText(file);
+  }
+
+  function showImportError(){
+    const note = document.querySelector('.backup-note');
+    if(note) note.textContent = 'Το αρχείο δεν ήταν έγκυρο αντίγραφο ασφαλείας.';
+  }
+
+  document.getElementById('exportBtn').addEventListener('click', exportData);
+  document.getElementById('importBtn').addEventListener('click', () => document.getElementById('importFile').click());
+  document.getElementById('importFile').addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if(file) importDataFromFile(file);
+    e.target.value = '';
+  });
+
+  function bootApp(){
+    document.getElementById('setupOverlay').classList.add('hidden');
+    document.getElementById('authOverlay').classList.add('hidden');
+    load();
+    loadTheme();
+    loadCounter();
+    loadCatalog();
+  }
+
+  function showSetup(prefillUrl, prefillKey){
+    document.getElementById('authOverlay').classList.add('hidden');
+    document.getElementById('setupOverlay').classList.remove('hidden');
+    if(prefillUrl) document.getElementById('setupUrl').value = prefillUrl;
+    if(prefillKey) document.getElementById('setupKey').value = prefillKey;
+  }
+
+  function showAuth(){
+    document.getElementById('setupOverlay').classList.add('hidden');
+    document.getElementById('authOverlay').classList.remove('hidden');
+  }
+
+  async function checkAuthAndBoot(){
+    const { data } = await sb.auth.getSession();
+    if(data && data.session){
+      bootApp();
+    } else {
+      showAuth();
+    }
+  }
+
+  document.getElementById('setupConnectBtn').addEventListener('click', async () => {
+    const url = document.getElementById('setupUrl').value.trim().replace(/\/$/, '');
+    const key = document.getElementById('setupKey').value.trim();
+    const errEl = document.getElementById('setupError');
+    if(!url || !key || !/^https:\/\/.+\.supabase\.co$/.test(url)){
+      errEl.textContent = 'Έλεγξε το URL (πρέπει να μοιάζει με https://xxxxx.supabase.co) και το κλειδί.';
+      return;
+    }
+    errEl.textContent = 'Έλεγχος σύνδεσης…';
+    connectSupabase(url, key);
+    try{
+      const { error } = await sb.auth.getSession();
+      if(error) throw error;
+    }catch(err){
+      errEl.textContent = 'Απέτυχε η σύνδεση: ' + (err && err.message ? err.message : err) + ' (έλεγξε το URL/κλειδί).';
+      return;
+    }
+    localStorage.setItem(CONFIG_URL_KEY, url);
+    localStorage.setItem(CONFIG_ANON_KEY, key);
+    checkAuthAndBoot();
+  });
+
+  document.getElementById('reconnectBtn').addEventListener('click', () => {
+    const saved = getSavedConfig();
+    showSetup(saved ? saved.url : '', saved ? saved.key : '');
+  });
+
+  document.getElementById('authChangeConnection').addEventListener('click', () => {
+    const saved = getSavedConfig();
+    showSetup(saved ? saved.url : '', saved ? saved.key : '');
+  });
+
+  document.getElementById('authSignInBtn').addEventListener('click', async () => {
+    const email = document.getElementById('authEmail').value.trim();
+    const password = document.getElementById('authPassword').value;
+    const errEl = document.getElementById('authError');
+    if(!email || !password){ errEl.textContent = 'Συμπλήρωσε email και κωδικό.'; return; }
+    errEl.textContent = 'Σύνδεση…';
+    const { error } = await sb.auth.signInWithPassword({ email, password });
+    if(error){ errEl.textContent = 'Αποτυχία σύνδεσης: ' + error.message; return; }
+    bootApp();
+  });
+
+  document.getElementById('authSignUpBtn').addEventListener('click', async () => {
+    const email = document.getElementById('authEmail').value.trim();
+    const password = document.getElementById('authPassword').value;
+    const errEl = document.getElementById('authError');
+    if(!email || !password){ errEl.textContent = 'Συμπλήρωσε email και κωδικό.'; return; }
+    if(password.length < 6){ errEl.textContent = 'Ο κωδικός χρειάζεται τουλάχιστον 6 χαρακτήρες.'; return; }
+    errEl.textContent = 'Δημιουργία λογαριασμού…';
+    const { data, error } = await sb.auth.signUp({ email, password });
+    if(error){ errEl.textContent = 'Αποτυχία εγγραφής: ' + error.message; return; }
+    if(data && data.session){
+      bootApp();
+    } else {
+      errEl.textContent = 'Ελέγξε το email σου για επιβεβαίωση λογαριασμού, μετά πάτα Σύνδεση.';
+    }
+  });
+
+  document.getElementById('logoutBtn').addEventListener('click', async () => {
+    if(sb){ await sb.auth.signOut(); }
+    location.reload();
+  });
+
+  const saved = getSavedConfig();
+  if(saved){
+    connectSupabase(saved.url, saved.key);
+    checkAuthAndBoot();
+  } else {
+    showSetup();
+  }
+})();
+</script>
+</body>
+</html>
