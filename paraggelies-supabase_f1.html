@@ -528,7 +528,7 @@
   }
   .qty-btn:hover{background:var(--pine); border-color:var(--pine); color:#fff;}
   .qty-stepper input[type="number"]{
-    width:56px;
+    width:72px;
     text-align:center;
     padding:6px 4px;
     font-size:15px;
@@ -546,7 +546,7 @@
   @media (max-width:420px){
     .order-item-row{grid-template-columns:1fr auto 50px 30px; gap:5px; padding-left:8px; padding-right:8px;}
     .qty-btn{width:26px; height:26px; font-size:16px;}
-    .qty-stepper input[type="number"]{width:44px; font-size:14.5px;}
+    .qty-stepper input[type="number"]{width:58px; font-size:14.5px;}
   }
 
 
@@ -1352,10 +1352,16 @@
       if(!selectedSupplier){ showCartModal = false; modalRoot.innerHTML = ''; return; }
       const sel = ensureSelections(selectedSupplier);
       const orderedItems = selectedSupplier.items.filter(it => sel[it.id] && sel[it.id].checked);
+      const cartTotals = calcOrderTotals(selectedSupplier);
       modalRoot.innerHTML = `
         <div class="modal-overlay" id="cartModalOverlay">
           <div class="modal-card">
             <h2>🛒 Είδη παραγγελίας</h2>
+            <div class="order-value" id="orderValueCardCart" style="${cartTotals.anyPriced ? '' : 'display:none;'}">
+              <div class="ov-item"><span class="ov-label">Καθαρή αξία</span><span class="ov-amount" id="ovNetCart">${fmtMoney(cartTotals.net)}</span></div>
+              <div class="ov-item"><span class="ov-label">ΦΠΑ</span><span class="ov-amount" id="ovVatCart">${fmtMoney(cartTotals.vatAmount)}</span></div>
+              <div class="ov-item ov-total"><span class="ov-label">Σύνολο παραγγελίας</span><span class="ov-amount" id="ovTotalCart">${fmtMoney(cartTotals.total)}</span></div>
+            </div>
             ${orderedItems.length === 0
               ? `<div class="no-items">Δεν έχεις επιλέξει ακόμα είδη. Κλείσε αυτό το παράθυρο και άνοιξε τα "Είδη" για να προσθέσεις.</div>`
               : `<div class="order-items-list">
@@ -1372,11 +1378,25 @@
                     </div>`).join('')}
                 </div>`
             }
-            <div class="modal-close-row"><button class="btn secondary" id="closeCartModal">Κλείσιμο</button></div>
+            <div class="modal-close-row" style="justify-content:space-between; flex-wrap:wrap; gap:8px;">
+              <div style="display:flex; gap:8px;">
+                <button class="btn secondary" id="cartClearBtn">Καθαρισμός</button>
+                <button class="btn secondary" id="cartAddMoreBtn">+ Προσθήκη</button>
+              </div>
+              <button class="btn secondary" id="closeCartModal">Κλείσιμο</button>
+            </div>
           </div>
         </div>`;
 
       document.getElementById('closeCartModal').addEventListener('click', () => { showCartModal = false; renderModals(); });
+      document.getElementById('cartClearBtn').addEventListener('click', () => { startNewOrder(selectedSupplier); });
+      document.getElementById('cartAddMoreBtn').addEventListener('click', () => {
+        showCartModal = false;
+        itemsPanelOpen = true;
+        render();
+        const el = document.getElementById('itemSearchInput');
+        if(el) el.focus();
+      });
       document.querySelectorAll('[data-order-qty]').forEach(inp => {
         inp.addEventListener('input', () => {
           const s = ensureSelections(selectedSupplier);
@@ -2226,6 +2246,16 @@
       if(ovNet) ovNet.textContent = fmtMoney(totals.net);
       if(ovVat) ovVat.textContent = fmtMoney(totals.vatAmount);
       if(ovTotal) ovTotal.textContent = fmtMoney(totals.total);
+    }
+    const ovCardCart = document.getElementById('orderValueCardCart');
+    if(ovCardCart){
+      ovCardCart.style.display = totals.anyPriced ? '' : 'none';
+      const ovNetCart = document.getElementById('ovNetCart');
+      const ovVatCart = document.getElementById('ovVatCart');
+      const ovTotalCart = document.getElementById('ovTotalCart');
+      if(ovNetCart) ovNetCart.textContent = fmtMoney(totals.net);
+      if(ovVatCart) ovVatCart.textContent = fmtMoney(totals.vatAmount);
+      if(ovTotalCart) ovTotalCart.textContent = fmtMoney(totals.total);
     }
     const encoded = orderText ? encodeURIComponent(orderText) : '';
     const dateStr = new Date().toLocaleDateString('el-GR', {day:'numeric', month:'long', year:'numeric'});
