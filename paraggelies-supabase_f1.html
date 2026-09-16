@@ -503,22 +503,22 @@
     border-bottom:1px solid var(--line-soft);
   }
   .order-item-row:last-child{border-bottom:none;}
-  .order-item-row .oi-name{font-size:14px; font-weight:500;}
-  .order-item-row .oi-unit{font-size:13px; color:var(--ink-soft);}
+  .order-item-row .oi-name{font-size:15px; font-weight:500;}
+  .order-item-row .oi-unit{font-size:13.5px; color:var(--ink-soft);}
   .qty-stepper{
     display:flex;
     align-items:center;
-    gap:4px;
+    gap:6px;
   }
   .qty-btn{
-    width:24px;
-    height:24px;
+    width:30px;
+    height:30px;
     flex:0 0 auto;
     border:1px solid var(--line);
-    border-radius:6px;
+    border-radius:7px;
     background:var(--panel);
     color:var(--ink);
-    font-size:15px;
+    font-size:17px;
     line-height:1;
     cursor:pointer;
     display:flex;
@@ -528,14 +528,15 @@
   }
   .qty-btn:hover{background:var(--pine); border-color:var(--pine); color:#fff;}
   .qty-stepper input[type="number"]{
-    width:46px;
+    width:56px;
     text-align:center;
-    padding:4px 2px;
+    padding:6px 4px;
+    font-size:15px;
   }
   .order-item-row input[type="number"]{
     font-family:inherit;
-    font-size:14px;
-    padding:6px 7px;
+    font-size:15px;
+    padding:7px 8px;
     border:1px solid var(--line);
     border-radius:6px;
     background:var(--panel);
@@ -543,10 +544,11 @@
     transition:border-color var(--ease);
   }
   @media (max-width:420px){
-    .order-item-row{grid-template-columns:1fr auto 45px 28px; gap:4px; padding-left:8px; padding-right:8px;}
-    .qty-btn{width:22px; height:22px; font-size:14px;}
-    .qty-stepper input[type="number"]{width:38px;}
+    .order-item-row{grid-template-columns:1fr auto 50px 30px; gap:5px; padding-left:8px; padding-right:8px;}
+    .qty-btn{width:26px; height:26px; font-size:16px;}
+    .qty-stepper input[type="number"]{width:44px; font-size:14.5px;}
   }
+
 
   .item-edit-row{
     padding:12px;
@@ -1094,7 +1096,7 @@
   let supplierSearchQuery = '';
   let itemSearchQuery = '';
   let itemsPanelOpen = false;
-  let orderItemsPanelOpen = false;
+  let showCartModal = false;
 
   const layout = document.getElementById('layout');
   document.getElementById('todayLabel').textContent = new Date().toLocaleDateString('el-GR', {day:'numeric', month:'long', year:'numeric'});
@@ -1344,6 +1346,71 @@
   function renderModals(){
     const modalRoot = document.getElementById('modalRoot');
     if(!modalRoot) return;
+
+    if(showCartModal){
+      const selectedSupplier = suppliers.find(s => s.id === selectedId);
+      if(!selectedSupplier){ showCartModal = false; modalRoot.innerHTML = ''; return; }
+      const sel = ensureSelections(selectedSupplier);
+      const orderedItems = selectedSupplier.items.filter(it => sel[it.id] && sel[it.id].checked);
+      modalRoot.innerHTML = `
+        <div class="modal-overlay" id="cartModalOverlay">
+          <div class="modal-card">
+            <h2>🛒 Είδη παραγγελίας</h2>
+            ${orderedItems.length === 0
+              ? `<div class="no-items">Δεν έχεις επιλέξει ακόμα είδη. Κλείσε αυτό το παράθυρο και άνοιξε τα "Είδη" για να προσθέσεις.</div>`
+              : `<div class="order-items-list">
+                  ${orderedItems.map(it => `
+                    <div class="order-item-row">
+                      <span class="oi-name">${esc(it.name)}</span>
+                      <span class="qty-stepper">
+                        <button type="button" class="qty-btn" data-qty-dec="${it.id}">−</button>
+                        <input type="number" min="0" step="0.5" data-order-qty="${it.id}" value="${sel[it.id].qty}">
+                        <button type="button" class="qty-btn" data-qty-inc="${it.id}">+</button>
+                      </span>
+                      <span class="oi-unit">${esc(it.unit || '')}</span>
+                      <button class="item-del" data-order-remove="${it.id}" title="Αφαίρεση από την παραγγελία">✕</button>
+                    </div>`).join('')}
+                </div>`
+            }
+            <div class="modal-close-row"><button class="btn secondary" id="closeCartModal">Κλείσιμο</button></div>
+          </div>
+        </div>`;
+
+      document.getElementById('closeCartModal').addEventListener('click', () => { showCartModal = false; renderModals(); });
+      document.querySelectorAll('[data-order-qty]').forEach(inp => {
+        inp.addEventListener('input', () => {
+          const s = ensureSelections(selectedSupplier);
+          s[inp.dataset.orderQty].qty = inp.value;
+          copiedMsg = '';
+          const it = selectedSupplier.items.find(x => x.id === inp.dataset.orderQty);
+          const price = it ? Number(it.price) || 0 : 0;
+          if(it && price > 0){
+            const priceLine = document.getElementById(`priceline-${it.id}`);
+            if(priceLine){
+              const vat = Number(it.vat) || 0;
+              const total = Number(inp.value || 0) * price * (1 + vat/100);
+              priceLine.textContent = `${fmtMoney(price)}/${it.unit || 'τεμ.'} · ΦΠΑ ${vat}% · τελική τιμή: ${fmtMoney(total)}`;
+            }
+          }
+          renderReceiptOnly(selectedSupplier);
+        });
+      });
+      document.querySelectorAll('[data-qty-dec]').forEach(btn => {
+        btn.addEventListener('click', () => { adjustOrderQty(selectedSupplier, btn.dataset.qtyDec, -1); });
+      });
+      document.querySelectorAll('[data-qty-inc]').forEach(btn => {
+        btn.addEventListener('click', () => { adjustOrderQty(selectedSupplier, btn.dataset.qtyInc, 1); });
+      });
+      document.querySelectorAll('[data-order-remove]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const s = ensureSelections(selectedSupplier);
+          s[btn.dataset.orderRemove].checked = false;
+          copiedMsg = '';
+          render();
+        });
+      });
+      return;
+    }
 
     if(showCatalogModal){
       modalRoot.innerHTML = `
@@ -1728,30 +1795,8 @@
           <div class="items-section">
             <button class="picker-toggle" id="orderItemsPickerToggle">
               <span>🛒 ${orderedItems.length} είδη στην παραγγελία</span>
-              <span class="chevron">${orderItemsPanelOpen ? '▴' : '▾'}</span>
-            </button>`;
-      if(orderItemsPanelOpen){
-        mainHtml += `
-            <div class="picker-panel">
-            ${orderedItems.length === 0
-              ? `<div class="no-items">Δεν έχεις επιλέξει ακόμα είδη. Άνοιξε τα "Είδη" παραπάνω για να προσθέσεις.</div>`
-              : `<div class="order-items-list">
-                  ${orderedItems.map(it => `
-                    <div class="order-item-row">
-                      <span class="oi-name">${esc(it.name)}</span>
-                      <span class="qty-stepper">
-                        <button type="button" class="qty-btn" data-qty-dec="${it.id}">−</button>
-                        <input type="number" min="0" step="0.5" data-order-qty="${it.id}" value="${sel[it.id].qty}">
-                        <button type="button" class="qty-btn" data-qty-inc="${it.id}">+</button>
-                      </span>
-                      <span class="oi-unit">${esc(it.unit || '')}</span>
-                      <button class="item-del" data-order-remove="${it.id}" title="Αφαίρεση από την παραγγελία">✕</button>
-                    </div>`).join('')}
-                </div>`
-            }
-            </div>`;
-      }
-      mainHtml += `
+              <span class="chevron">›</span>
+            </button>
           </div>`;
 
       const orderText = buildOrderText(selectedSupplier);
@@ -1859,7 +1904,7 @@
     const orderItemsPickerToggle = document.getElementById('orderItemsPickerToggle');
     if(orderItemsPickerToggle){
       orderItemsPickerToggle.addEventListener('click', () => {
-        orderItemsPanelOpen = !orderItemsPanelOpen;
+        showCartModal = true;
         render();
       });
     }
@@ -1889,7 +1934,7 @@
         editingItemId = null;
         supplierPickerOpen = false;
         itemsPanelOpen = false;
-        orderItemsPanelOpen = false;
+        showCartModal = false;
         render();
       });
     });
@@ -2040,38 +2085,6 @@
         copiedMsg = '';
         render();
       });
-    });
-    document.querySelectorAll('[data-order-qty]').forEach(inp => {
-      inp.addEventListener('input', () => {
-        const sel = ensureSelections(selectedSupplier);
-        sel[inp.dataset.orderQty].qty = inp.value;
-        copiedMsg = '';
-        const it = selectedSupplier.items.find(x => x.id === inp.dataset.orderQty);
-        const price = it ? Number(it.price) || 0 : 0;
-        if(it && price > 0){
-          const priceLine = document.getElementById(`priceline-${it.id}`);
-          if(priceLine){
-            const vat = Number(it.vat) || 0;
-            const total = Number(inp.value || 0) * price * (1 + vat/100);
-            priceLine.textContent = `${fmtMoney(price)}/${it.unit || 'τεμ.'} · ΦΠΑ ${vat}% · τελική τιμή: ${fmtMoney(total)}`;
-          }
-        }
-        renderReceiptOnly(selectedSupplier);
-      });
-    });
-    document.querySelectorAll('[data-order-remove]').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const sel = ensureSelections(selectedSupplier);
-        sel[btn.dataset.orderRemove].checked = false;
-        copiedMsg = '';
-        render();
-      });
-    });
-    document.querySelectorAll('[data-qty-dec]').forEach(btn => {
-      btn.addEventListener('click', () => adjustOrderQty(selectedSupplier, btn.dataset.qtyDec, -1));
-    });
-    document.querySelectorAll('[data-qty-inc]').forEach(btn => {
-      btn.addEventListener('click', () => adjustOrderQty(selectedSupplier, btn.dataset.qtyInc, 1));
     });
     document.querySelectorAll('[data-del-item]').forEach(btn => {
       btn.addEventListener('click', () => {
