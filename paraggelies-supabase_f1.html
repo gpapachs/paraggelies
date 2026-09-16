@@ -496,17 +496,43 @@
   }
   .order-item-row{
     display:grid;
-    grid-template-columns:1fr 90px 70px 34px;
+    grid-template-columns:1fr auto 60px 34px;
     gap:8px;
     align-items:center;
     padding:9px 12px;
     border-bottom:1px solid var(--line-soft);
   }
   .order-item-row:last-child{border-bottom:none;}
-  .order-item-row .oi-name{font-size:14px;}
+  .order-item-row .oi-name{font-size:14px; font-weight:500;}
   .order-item-row .oi-unit{font-size:13px; color:var(--ink-soft);}
+  .qty-stepper{
+    display:flex;
+    align-items:center;
+    gap:4px;
+  }
+  .qty-btn{
+    width:24px;
+    height:24px;
+    flex:0 0 auto;
+    border:1px solid var(--line);
+    border-radius:6px;
+    background:var(--panel);
+    color:var(--ink);
+    font-size:15px;
+    line-height:1;
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    transition:background-color var(--ease), border-color var(--ease);
+  }
+  .qty-btn:hover{background:var(--pine); border-color:var(--pine); color:#fff;}
+  .qty-stepper input[type="number"]{
+    width:46px;
+    text-align:center;
+    padding:4px 2px;
+  }
   .order-item-row input[type="number"]{
-    width:100%;
     font-family:inherit;
     font-size:14px;
     padding:6px 7px;
@@ -517,7 +543,9 @@
     transition:border-color var(--ease);
   }
   @media (max-width:420px){
-    .order-item-row{grid-template-columns:1fr 70px 55px 30px; gap:5px; padding-left:8px; padding-right:8px;}
+    .order-item-row{grid-template-columns:1fr auto 45px 28px; gap:4px; padding-left:8px; padding-right:8px;}
+    .qty-btn{width:22px; height:22px; font-size:14px;}
+    .qty-stepper input[type="number"]{width:38px;}
   }
 
   .item-edit-row{
@@ -868,6 +896,7 @@
     <button class="link-btn" id="exportBtn">Λήψη αντιγράφου ασφαλείας</button>
     <button class="link-btn" id="importBtn">Επαναφορά από αρχείο</button>
     <button class="link-btn" id="reconnectBtn">Αλλαγή σύνδεσης Supabase</button>
+    <button class="link-btn" id="logoutBtn">Αποσύνδεση</button>
     <input type="file" id="importFile" accept="application/json" style="display:none;">
   </div>
   <div class="layout" id="layout">Φόρτωση…</div>
@@ -882,6 +911,21 @@
     <input type="text" id="setupKey" placeholder="anon public key">
     <div class="form-error" id="setupError"></div>
     <button class="btn full" id="setupConnectBtn">Σύνδεση</button>
+  </div>
+</div>
+
+<div class="setup-overlay hidden" id="authOverlay">
+  <div class="setup-card">
+    <h2>Σύνδεση χρήστη</h2>
+    <p>Συνδέσου με email και κωδικό. Αν δεν έχεις ακόμα λογαριασμό, δημιούργησέ έναν παρακάτω — τον χρησιμοποιούν όλοι όσοι δουλεύουν με τις παραγγελίες σας.</p>
+    <input type="email" id="authEmail" placeholder="email@example.com" autocomplete="username">
+    <input type="password" id="authPassword" placeholder="Κωδικός" autocomplete="current-password">
+    <div class="form-error" id="authError"></div>
+    <div class="edit-row" style="display:flex; gap:8px; margin-top:4px;">
+      <button class="btn full" id="authSignInBtn">Σύνδεση</button>
+      <button class="btn secondary full" id="authSignUpBtn">Εγγραφή</button>
+    </div>
+    <button class="link-btn" id="authChangeConnection" style="margin-top:14px;">Αλλαγή σύνδεσης Supabase</button>
   </div>
 </div>
 
@@ -1683,7 +1727,7 @@
       mainHtml += `
           <div class="items-section">
             <button class="picker-toggle" id="orderItemsPickerToggle">
-              <span>${orderedItems.length} είδη στην παραγγελία</span>
+              <span>🛒 ${orderedItems.length} είδη στην παραγγελία</span>
               <span class="chevron">${orderItemsPanelOpen ? '▴' : '▾'}</span>
             </button>`;
       if(orderItemsPanelOpen){
@@ -1695,7 +1739,11 @@
                   ${orderedItems.map(it => `
                     <div class="order-item-row">
                       <span class="oi-name">${esc(it.name)}</span>
-                      <input type="number" min="0" step="0.5" data-order-qty="${it.id}" value="${sel[it.id].qty}">
+                      <span class="qty-stepper">
+                        <button type="button" class="qty-btn" data-qty-dec="${it.id}">−</button>
+                        <input type="number" min="0" step="0.5" data-order-qty="${it.id}" value="${sel[it.id].qty}">
+                        <button type="button" class="qty-btn" data-qty-inc="${it.id}">+</button>
+                      </span>
                       <span class="oi-unit">${esc(it.unit || '')}</span>
                       <button class="item-del" data-order-remove="${it.id}" title="Αφαίρεση από την παραγγελία">✕</button>
                     </div>`).join('')}
@@ -2019,6 +2067,12 @@
         render();
       });
     });
+    document.querySelectorAll('[data-qty-dec]').forEach(btn => {
+      btn.addEventListener('click', () => adjustOrderQty(selectedSupplier, btn.dataset.qtyDec, -1));
+    });
+    document.querySelectorAll('[data-qty-inc]').forEach(btn => {
+      btn.addEventListener('click', () => adjustOrderQty(selectedSupplier, btn.dataset.qtyInc, 1));
+    });
     document.querySelectorAll('[data-del-item]').forEach(btn => {
       btn.addEventListener('click', () => {
         const id = btn.dataset.delItem;
@@ -2122,6 +2176,27 @@
   }
 
   // lightweight partial re-render for qty typing so focus isn't lost while typing
+  function adjustOrderQty(supplier, itemId, delta){
+    const sel = ensureSelections(supplier);
+    const current = Number(sel[itemId].qty) || 0;
+    const next = Math.max(0, current + delta);
+    sel[itemId].qty = next;
+    const inp = document.querySelector(`[data-order-qty="${itemId}"]`);
+    if(inp) inp.value = next;
+    copiedMsg = '';
+    const it = supplier.items.find(x => x.id === itemId);
+    const price = it ? Number(it.price) || 0 : 0;
+    if(it && price > 0){
+      const priceLine = document.getElementById(`priceline-${it.id}`);
+      if(priceLine){
+        const vat = Number(it.vat) || 0;
+        const total = next * price * (1 + vat/100);
+        priceLine.textContent = `${fmtMoney(price)}/${it.unit || 'τεμ.'} · ΦΠΑ ${vat}% · τελική τιμή: ${fmtMoney(total)}`;
+      }
+    }
+    renderReceiptOnly(supplier);
+  }
+
   function renderReceiptOnly(selectedSupplier){
     const receiptEl = document.querySelector('.receipt');
     const orderText = buildOrderText(selectedSupplier);
@@ -2214,6 +2289,7 @@
 
   function bootApp(){
     document.getElementById('setupOverlay').classList.add('hidden');
+    document.getElementById('authOverlay').classList.add('hidden');
     load();
     loadTheme();
     loadCounter();
@@ -2221,9 +2297,24 @@
   }
 
   function showSetup(prefillUrl, prefillKey){
+    document.getElementById('authOverlay').classList.add('hidden');
     document.getElementById('setupOverlay').classList.remove('hidden');
     if(prefillUrl) document.getElementById('setupUrl').value = prefillUrl;
     if(prefillKey) document.getElementById('setupKey').value = prefillKey;
+  }
+
+  function showAuth(){
+    document.getElementById('setupOverlay').classList.add('hidden');
+    document.getElementById('authOverlay').classList.remove('hidden');
+  }
+
+  async function checkAuthAndBoot(){
+    const { data } = await sb.auth.getSession();
+    if(data && data.session){
+      bootApp();
+    } else {
+      showAuth();
+    }
   }
 
   document.getElementById('setupConnectBtn').addEventListener('click', async () => {
@@ -2236,14 +2327,16 @@
     }
     errEl.textContent = 'Έλεγχος σύνδεσης…';
     connectSupabase(url, key);
-    const { error } = await sb.from('app_storage').select('key').limit(1);
-    if(error){
-      errEl.textContent = 'Απέτυχε η σύνδεση: ' + error.message + ' (έλεγξε ότι υπάρχει ο πίνακας app_storage και τα σωστά δικαιώματα).';
+    try{
+      const { error } = await sb.auth.getSession();
+      if(error) throw error;
+    }catch(err){
+      errEl.textContent = 'Απέτυχε η σύνδεση: ' + (err && err.message ? err.message : err) + ' (έλεγξε το URL/κλειδί).';
       return;
     }
     localStorage.setItem(CONFIG_URL_KEY, url);
     localStorage.setItem(CONFIG_ANON_KEY, key);
-    bootApp();
+    checkAuthAndBoot();
   });
 
   document.getElementById('reconnectBtn').addEventListener('click', () => {
@@ -2251,10 +2344,47 @@
     showSetup(saved ? saved.url : '', saved ? saved.key : '');
   });
 
+  document.getElementById('authChangeConnection').addEventListener('click', () => {
+    const saved = getSavedConfig();
+    showSetup(saved ? saved.url : '', saved ? saved.key : '');
+  });
+
+  document.getElementById('authSignInBtn').addEventListener('click', async () => {
+    const email = document.getElementById('authEmail').value.trim();
+    const password = document.getElementById('authPassword').value;
+    const errEl = document.getElementById('authError');
+    if(!email || !password){ errEl.textContent = 'Συμπλήρωσε email και κωδικό.'; return; }
+    errEl.textContent = 'Σύνδεση…';
+    const { error } = await sb.auth.signInWithPassword({ email, password });
+    if(error){ errEl.textContent = 'Αποτυχία σύνδεσης: ' + error.message; return; }
+    bootApp();
+  });
+
+  document.getElementById('authSignUpBtn').addEventListener('click', async () => {
+    const email = document.getElementById('authEmail').value.trim();
+    const password = document.getElementById('authPassword').value;
+    const errEl = document.getElementById('authError');
+    if(!email || !password){ errEl.textContent = 'Συμπλήρωσε email και κωδικό.'; return; }
+    if(password.length < 6){ errEl.textContent = 'Ο κωδικός χρειάζεται τουλάχιστον 6 χαρακτήρες.'; return; }
+    errEl.textContent = 'Δημιουργία λογαριασμού…';
+    const { data, error } = await sb.auth.signUp({ email, password });
+    if(error){ errEl.textContent = 'Αποτυχία εγγραφής: ' + error.message; return; }
+    if(data && data.session){
+      bootApp();
+    } else {
+      errEl.textContent = 'Ελέγξε το email σου για επιβεβαίωση λογαριασμού, μετά πάτα Σύνδεση.';
+    }
+  });
+
+  document.getElementById('logoutBtn').addEventListener('click', async () => {
+    if(sb){ await sb.auth.signOut(); }
+    location.reload();
+  });
+
   const saved = getSavedConfig();
   if(saved){
     connectSupabase(saved.url, saved.key);
-    bootApp();
+    checkAuthAndBoot();
   } else {
     showSetup();
   }
