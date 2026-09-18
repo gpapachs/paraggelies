@@ -2081,10 +2081,6 @@
         supplierPickerOpen = !supplierPickerOpen;
         if(supplierPickerOpen) supplierSearchQuery = '';
         render();
-        if(supplierPickerOpen){
-          const el = document.getElementById('supplierSearchInput');
-          if(el) el.focus();
-        }
       });
     }
     const itemsPickerToggle = document.getElementById('itemsPickerToggle');
