@@ -14,6 +14,7 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <style>
   :root{
     --paper: #F3F6F4;
@@ -1212,6 +1213,67 @@
     URL.revokeObjectURL(url);
   }
 
+  function findCol(headers, aliases){
+    for(let i=0;i<headers.length;i++){
+      const h = String(headers[i]||'').trim().toLowerCase();
+      if(aliases.some(a => h.includes(a))) return i;
+    }
+    return -1;
+  }
+
+  function importItemsFromExcel(file, supplier, onDone){
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      try{
+        if(typeof XLSX === 'undefined'){
+          onDone('Η βιβλιοθήκη ανάγνωσης Excel δεν φορτώθηκε (χρειάζεται σύνδεση στο διαδίκτυο).');
+          return;
+        }
+        const data = new Uint8Array(e.target.result);
+        const wb = XLSX.read(data, { type:'array' });
+        const sheet = wb.Sheets[wb.SheetNames[0]];
+        const rows = XLSX.utils.sheet_to_json(sheet, { header:1, defval:'' });
+        if(rows.length < 2){ onDone('Το αρχείο δεν έχει δεδομένα.'); return; }
+        const headers = rows[0];
+        const nameCol = findCol(headers, ['όνομα','ονομα','name','είδος','ειδος','προϊόν','προιον']);
+        const catCol = findCol(headers, ['κατηγορία','κατηγορια','category']);
+        const unitCol = findCol(headers, ['μονάδα','μοναδα','unit']);
+        const qtyCol = findCol(headers, ['ποσότητα','ποσοτητα','qty','quantity']);
+        const priceCol = findCol(headers, ['τιμή','τιμη','price']);
+        const vatCol = findCol(headers, ['φπα','vat']);
+        if(nameCol === -1){
+          onDone('Δεν βρέθηκε στήλη με όνομα είδους (π.χ. "Όνομα" ή "Είδος").');
+          return;
+        }
+        let added = 0;
+        for(let i=1;i<rows.length;i++){
+          const row = rows[i];
+          const name = String(row[nameCol] || '').trim();
+          if(!name) continue;
+          const category = catCol >= 0 ? String(row[catCol] || '').trim() : '';
+          const unit = unitCol >= 0 ? String(row[unitCol] || '').trim() : '';
+          const qtyRaw = qtyCol >= 0 ? row[qtyCol] : '';
+          const qty = qtyRaw !== '' && !isNaN(Number(qtyRaw)) ? Number(qtyRaw) : 1;
+          const priceRaw = priceCol >= 0 ? row[priceCol] : '';
+          const price = priceRaw !== '' && !isNaN(Number(priceRaw)) ? Number(priceRaw) : 0;
+          const vatRaw = vatCol >= 0 ? row[vatCol] : '';
+          const vat = vatRaw !== '' && !isNaN(Number(vatRaw)) ? Number(vatRaw) : 13;
+          const item = { id: uid(), name, unit, category, defaultQty: qty || 1, price: price || 0, vat: vat || 0 };
+          const catalogMatch = findCatalogByName(name);
+          if(catalogMatch) item.catalogId = catalogMatch.id;
+          supplier.items.push(item);
+          ensureSelections(supplier)[item.id] = { checked:false, qty: item.defaultQty };
+          added++;
+        }
+        persist();
+        onDone(added > 0 ? `Προστέθηκαν ${added} είδη από το αρχείο.` : 'Δεν βρέθηκε καμία έγκυρη γραμμή είδους.');
+      }catch(err){
+        onDone('Σφάλμα ανάγνωσης αρχείου: ' + (err && err.message ? err.message : err));
+      }
+    };
+    reader.readAsArrayBuffer(file);
+  }
+
   function groupItemsByCategory(items){
     const groups = {};
     items.forEach(it => {
@@ -1664,6 +1726,11 @@
         }
       }
       itemsInner += `<button class="btn secondary full" id="openAddItemModal" style="margin-top:10px;">+ Νέο είδος</button>`;
+      itemsInner += `
+        <button class="btn secondary full" id="importItemsBtn" style="margin-top:8px;">Ανέβασμα από Excel/CSV</button>
+        <input type="file" id="importItemsFile" accept=".xlsx,.xls,.csv" style="display:none;">
+        <div style="font-size:11.5px; color:var(--ink-soft); margin-top:6px;">Στήλες: Όνομα (υποχρεωτικό), Κατηγορία, Μονάδα, Ποσότητα, Τιμή, ΦΠΑ.</div>
+        <div class="form-error" id="importItemsMsg"></div>`;
 
       modalRoot.innerHTML = `
         <div class="modal-overlay" id="itemsModalOverlay">
@@ -1677,6 +1744,24 @@
       document.getElementById('closeItemsModal').addEventListener('click', () => { showItemsModal = false; renderModals(); });
       const openAddItemModalBtn = document.getElementById('openAddItemModal');
       if(openAddItemModalBtn) openAddItemModalBtn.addEventListener('click', () => { showItemsModal = false; showAddItemModal = true; render(); });
+
+      const importItemsBtn = document.getElementById('importItemsBtn');
+      const importItemsFileEl = document.getElementById('importItemsFile');
+      if(importItemsBtn && importItemsFileEl){
+        importItemsBtn.addEventListener('click', () => importItemsFileEl.click());
+        importItemsFileEl.addEventListener('change', (e) => {
+          const file = e.target.files[0];
+          e.target.value = '';
+          if(!file) return;
+          const msgEl = document.getElementById('importItemsMsg');
+          if(msgEl) msgEl.textContent = 'Ανάγνωση αρχείου…';
+          importItemsFromExcel(file, selectedSupplier, (message) => {
+            renderModals();
+            const el = document.getElementById('importItemsMsg');
+            if(el) el.textContent = message;
+          });
+        });
+      }
 
       const categoryFilterEl = document.getElementById('categoryFilter');
       if(categoryFilterEl){
@@ -2109,12 +2194,14 @@
             <div class="receipt-wrap">
               <div class="receipt">${orderText ? esc(orderText) : '<span class="muted">Επίλεξε τουλάχιστον ένα είδος με ποσότητα μεγαλύτερη από 0 για να δημιουργηθεί η παραγγελία.</span>'}</div>
               <div class="actions">
-                <button class="btn full" id="copyBtn" ${orderText ? '' : 'disabled'}>Αντιγραφή κειμένου</button>
+                <button class="btn full" id="shareBtn" ${orderText ? '' : 'disabled'}>Κοινή χρήση…</button>
+                <button class="btn secondary full" id="copyBtn" ${orderText ? '' : 'disabled'}>Αντιγραφή κειμένου</button>
                 <a class="btn secondary full" href="${orderText ? `mailto:${encodeURIComponent(selectedSupplier.email||'')}?subject=${subject}&body=${encoded}` : '#'}" ${orderText ? '' : 'aria-disabled="true" onclick="return false;"'}>Αποστολή με Email</a>
                 <a class="btn stamp full" href="${orderText ? `https://wa.me/${phoneDigits}?text=${encoded}` : '#'}" target="_blank" rel="noopener" ${orderText ? '' : 'aria-disabled="true" onclick="return false;"'}>Αποστολή με WhatsApp</a>
                 <a class="btn secondary full" href="${orderText ? `viber://forward?text=${encoded}` : '#'}" ${orderText ? '' : 'aria-disabled="true" onclick="return false;"'}>Αποστολή με Viber</a>
                 <button class="btn secondary full" id="saveHistoryBtn" ${orderText ? '' : 'disabled'}>Καταχώρηση παραγγελίας</button>
                 <button class="link-btn" id="clearOrderBtn">Καθαρισμός παραγγελίας</button>
+                ${orderText && orderText.length > 1200 ? `<div class="form-error">Το κείμενο είναι μεγάλο (${orderText.length} χαρακτήρες) — τα links WhatsApp/Email/Viber μπορεί να το κόψουν. Χρησιμοποίησε "Κοινή χρήση" ή "Αντιγραφή" για σίγουρη πλήρη αποστολή.</div>` : ''}
                 <div class="copied-msg" id="copiedMsg">${copiedMsg}</div>
               </div>
             </div>
@@ -2346,6 +2433,29 @@
         }
       });
     });
+
+    const shareBtn = document.getElementById('shareBtn');
+    if(shareBtn){
+      shareBtn.addEventListener('click', async () => {
+        const text = buildOrderText(selectedSupplier);
+        if(!text) return;
+        const msgEl = document.getElementById('copiedMsg');
+        if(navigator.share){
+          try{
+            await navigator.share({ text });
+          }catch(e){
+            /* ο χρήστης ακύρωσε ή απέτυχε - δεν κάνουμε τίποτα */
+          }
+        } else {
+          try{
+            await navigator.clipboard.writeText(text);
+            if(msgEl) msgEl.textContent = 'Η "Κοινή χρήση" δεν υποστηρίζεται εδώ — αντιγράφηκε στο πρόχειρο αντ\' αυτού.';
+          }catch(e){
+            if(msgEl) msgEl.textContent = 'Η "Κοινή χρήση" δεν υποστηρίζεται σε αυτή τη συσκευή.';
+          }
+        }
+      });
+    }
 
     const copyBtn = document.getElementById('copyBtn');
     if(copyBtn){
